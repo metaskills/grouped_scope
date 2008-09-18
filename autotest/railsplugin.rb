@@ -2,6 +2,9 @@ class Autotest::Railsplugin < Autotest
   
   def initialize
     super
+    add_exception %r%^\./(?:autotest|tasks)%
+    add_exception %r%^(install|uninstall)\.rb%
+    add_exception %r%.*\.log%
     clear_mappings
     
     # self.libs = [
