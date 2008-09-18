@@ -22,6 +22,9 @@ class Autotest::Railsplugin < Autotest
       filename
     end
     
+    # TODO MAPPINGS
+    #   * test/helper will run everything again.
+    
   end
   
   

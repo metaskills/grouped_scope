@@ -1,5 +1,2 @@
-
-
-
-
+require 'grouped_scope'
 

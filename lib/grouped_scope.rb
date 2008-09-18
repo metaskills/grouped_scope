@@ -5,9 +5,14 @@ require 'grouped_scope/group'
 
 module GroupedScope
   
-  def self.included(klass)
-    klass.extend ClassMethods
+  VERSION = '1.0.0'
+  
+  def self.included(klass) #:nodoc:
+    klass.class_eval do
+      extend ClassMethods
+    end
   end
+  
   
   module ClassMethods
     

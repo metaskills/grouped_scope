@@ -14,13 +14,12 @@ module GroupedScope
       @owner = owner
     end
     
-    def group_ids
-      @group_ids ||= find_selves(group_id_scope_options).map(&:id)
+    def ids
+      @ids ||= find_selves(group_id_scope_options).map(&:id)
     end
-    alias_method :ids, :group_ids
     
     def quoted_ids
-      group_ids.map { |id| quote_value(id,columns_hash[primary_key]) }.join(',')
+      ids.map { |id| quote_value(id,columns_hash[primary_key]) }.join(',')
     end
     
     def group
