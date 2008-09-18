@@ -10,6 +10,7 @@ require 'active_support'
 require 'grouped_scope'
 
 ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__)+'/debug.log')
+ActiveRecord::Base.colorize_logging = false
 ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database => ':memory:'
 
 def setup_environment(options={})
