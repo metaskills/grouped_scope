@@ -2,8 +2,13 @@ class Autotest::Railsplugin < Autotest
   
   def initialize
     super
+    
+    # Ignore these directories in the plugin.
     add_exception %r%^\./(?:autotest|tasks)%
+    
+    # Ignore these files in the root of the plugin folder.
     add_exception %r%^(install|uninstall)\.rb%
+    
     add_exception %r%.*\.log%
     clear_mappings
     
