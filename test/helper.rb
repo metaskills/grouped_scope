@@ -1,12 +1,8 @@
-$: << File.join(File.dirname(__FILE__), '..', 'lib')
-$: << File.join(File.dirname(__FILE__), '..', 'lib', 'grouped_scope')
 require 'test/unit'
 require 'rubygems'
 require 'shoulda'
 require 'mocha'
-require 'boot' unless defined?(ActiveRecord)
-require 'activerecord'
-require 'active_support'
+require File.join(File.dirname(__FILE__),'boot') unless defined?(ActiveRecord)
 require 'grouped_scope'
 
 ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__)+'/debug.log')

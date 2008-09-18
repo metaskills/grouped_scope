@@ -7,7 +7,7 @@ class Autotest::Railsplugin < Autotest
     # self.libs = %w[. lib test].join(File::PATH_SEPARATOR)
     
     # Ignore these directories in the plugin.
-    add_exception %r%^\./(?:autotest|tasks)%
+    add_exception %r%^\./(?:autotest|tasks|\.git)%
     
     # Ignore these ruby files in the root of the plugin folder.
     add_exception %r%^\./(install|uninstall)\.rb$%
@@ -20,18 +20,16 @@ class Autotest::Railsplugin < Autotest
     
     clear_mappings
     
+    # Easy start. Any test file saved runs that file
+    self.add_mapping(%r%^test/.*_test.rb$%) do |filename, matchs|
+      filename
+    end
+    
     # If any file in lib matches up to a file in the same directory structure of 
     # the test directory, ofcourse having _test.rb at the end, will run that test. 
     self.add_mapping(%r%^lib/(.*)\.rb$%) do |filename, matchs|
       filename_path = matchs[1]
       files_matching %r%^test/#{filename_path}_test\.rb$%
-    end
-    
-    # Reciprocate above. Find matching files in the same dir structure in lib that 
-    # matches a test file name / directory structure.
-    self.add_mapping(%r%^test/(.*)_test.rb$%) do |filename, matchs|
-      filename_path = matchs[1]
-      files_matching %r%^lib/#{matchs[1]}\.rb$%
     end
     
     # If any core test file like the helper, boot, database.yml change, then run 

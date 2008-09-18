@@ -1,4 +1,4 @@
-require 'helper'
+require File.dirname(__FILE__) + '/../helper'
 
 class GroupTest < Test::Unit::TestCase
   

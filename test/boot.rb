@@ -1,8 +1,13 @@
 
-plugin_root     = File.join(File.dirname(__FILE__), '..')
+plugin_root     = File.expand_path(File.join(File.dirname(__FILE__),'..'))
 framework_root  = ["#{plugin_root}/rails", "#{plugin_root}/../../rails"].detect { |p| File.directory? p }
 rails_version   = ENV['RAILS_VERSION']
 rails_version   = nil if rails_version && rails_version == ''
+
+['.','lib','test'].each do |plugin_lib|
+  load_path = File.expand_path("#{plugin_root}/#{plugin_lib}")
+  $LOAD_PATH.unshift(load_path) unless $LOAD_PATH.include?(load_path)
+end
 
 if rails_version.nil? && framework_root
   puts "Found framework root: #{framework_root}"
@@ -15,4 +20,7 @@ else
     gem 'activerecord'
   end
 end
+
+require 'activerecord'
+require 'active_support'
 
