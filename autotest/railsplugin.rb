@@ -6,10 +6,15 @@ class Autotest::Railsplugin < Autotest
     # Ignore these directories in the plugin.
     add_exception %r%^\./(?:autotest|tasks)%
     
-    # Ignore these files in the root of the plugin folder.
-    add_exception %r%^(install|uninstall)\.rb%
+    # Ignore these ruby files in the root of the plugin folder.
+    add_exception %r%^\./(install|uninstall)\.rb$%
     
-    add_exception %r%.*\.log%
+    # Ignore these misc files in the root of the plugin folder.
+    add_exception %r%^\./(.*LICENSE|Rakefile|README.*|CHANGELOG.*)$%
+    
+    # Ignore any log file.
+    add_exception %r%.*\.log$%
+    
     clear_mappings
     
     # self.libs = [

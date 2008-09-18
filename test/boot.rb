@@ -1,7 +1,4 @@
 
-require 'activerecord'
-require 'active_support'
-
 plugin_root     = File.join(File.dirname(__FILE__), '..')
 framework_root  = ["#{plugin_root}/rails", "#{plugin_root}/../../rails"].detect { |p| File.directory? p }
 rails_version   = ENV['RAILS_VERSION']
