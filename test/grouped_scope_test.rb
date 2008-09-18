@@ -1,4 +1,4 @@
-require 'test/helper'
+require 'helper'
 
 class GroupedScopeTest < Test::Unit::TestCase
   
