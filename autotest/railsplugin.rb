@@ -3,6 +3,9 @@ class Autotest::Railsplugin < Autotest
   def initialize
     super
     
+    # Default libs for autotest. So far they suit us just fine.
+    # self.libs = %w[. lib test].join(File::PATH_SEPARATOR)
+    
     # Ignore these directories in the plugin.
     add_exception %r%^\./(?:autotest|tasks)%
     
@@ -17,29 +20,27 @@ class Autotest::Railsplugin < Autotest
     
     clear_mappings
     
-    # self.libs = [
-    #   "lib",
-    #   "test"
-    # ].join(File::PATH_SEPARATOR)
-    
-    # self.add_mapping %r%^test/.*/.*_test_sqlserver.rb$% do |filename, _|
-    #   filename
-    # end
-    
-    self.add_mapping(/^lib\/.*\.rb$/) do |filename, _|
-      possible = File.basename(filename).gsub '_', '_?'
-      files_matching %r%^test/.*#{possible}$%
+    # If any file in lib matches up to a file in the same directory structure of 
+    # the test directory, ofcourse having _test.rb at the end, will run that test. 
+    self.add_mapping(%r%^lib/(.*)\.rb$%) do |filename, matchs|
+      filename_path = matchs[1]
+      files_matching %r%^test/#{filename_path}_test\.rb$%
     end
     
-    self.add_mapping(/^test.*\/.*_test.rb$/) do |filename, _|
-      filename
+    # Reciprocate above. Find matching files in the same dir structure in lib that 
+    # matches a test file name / directory structure.
+    self.add_mapping(%r%^test/(.*)_test.rb$%) do |filename, matchs|
+      filename_path = matchs[1]
+      files_matching %r%^lib/#{matchs[1]}\.rb$%
     end
     
-    # TODO MAPPINGS
-    #   * test/helper will run everything again.
+    # If any core test file like the helper, boot, database.yml change, then run 
+    # all matching .*_test.rb files in the test directory.
+    add_mapping %r%^test/(boot|helper|test_helper)\.rb|database.yml% do
+      files_matching %r%^test/.*_test\.rb$%
+    end
     
   end
-  
   
   
 end
