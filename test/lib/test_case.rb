@@ -1,5 +1,5 @@
 
-ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__)+'/debug.log')
+ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__)+'/../debug.log')
 ActiveRecord::Base.colorize_logging = false
 ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database => ':memory:'
 ActiveRecord::Base.connection.class.class_eval do
