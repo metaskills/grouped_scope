@@ -10,7 +10,7 @@ module GroupedScope
     
     def method_missing(method, *args, &block)
       group_method = "group_#{method}".to_sym
-      if proxy_class.grouped_scopes[group_method]
+      if proxy_class.grouped_scopes[method]
         proxy_owner.send(group_method, *args, &block)
       else
         super

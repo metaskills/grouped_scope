@@ -7,7 +7,7 @@ class Autotest::Railsplugin < Autotest
     # self.libs = %w[. lib test].join(File::PATH_SEPARATOR)
     
     # Ignore these directories in the plugin.
-    add_exception %r%^\./(?:autotest|tasks|\.git)%
+    add_exception %r%^\./(?:autotest|tasks)%
     
     # Ignore these ruby files in the root of the plugin folder.
     add_exception %r%^\./(install|uninstall)\.rb$%
