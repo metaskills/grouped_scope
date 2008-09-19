@@ -8,13 +8,14 @@ module GroupedScope
     def grouped_scope(*args)
       belongs_to_grouped_scope_grouping
       args.each do |association|
-        ung_assoc = reflect_on_association(association)
-        unless ung_assoc && ung_assoc.macro == :has_many
-          raise ArgumentError, "Cannot create a group scope for :#{association} because it is not a has_many association."
+        existing_assoc = reflect_on_association(association)
+        unless existing_assoc && existing_assoc.macro == :has_many
+          raise ArgumentError, "Cannot create a group scope for :#{association} because it is not a has_many " + 
+                               "association. Make sure to call grouped_scope after the has_many associations."
         end
         grouped_scopes[association] = true
-        group_association_options = {:class_name => ung_assoc.class_name, :foreign_key => ung_assoc.primary_key_name}
-        group_association_options.merge!(ung_assoc.options)
+        group_association_options = {:class_name => existing_assoc.class_name, :foreign_key => existing_assoc.primary_key_name}
+        group_association_options.merge!(existing_assoc.options)
         has_many "group_#{association}".to_sym, group_association_options
       end
       include InstanceMethods

@@ -26,8 +26,12 @@ class ClassMethodsTest < Test::Unit::TestCase
       assert Employee.reflect_on_association(:grouping)
     end
     
-    should 'not create more belongs_to :grouping on additional calls' do
-      Employee.expects(:has_many).with(:grouping).never
+    should 'raise an exception when has_many association does not exist' do
+      assert_raise(ArgumentError) { Employee.class_eval{grouped_scope(:foobars)} }
+    end
+    
+    should 'not recreate belongs_to :grouping on additional calls' do
+      Employee.stubs(:belongs_to).never
       Employee.class_eval { has_many(:foobars) ; grouped_scope(:foobars) }
     end
     
