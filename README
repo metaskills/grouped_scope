@@ -5,10 +5,12 @@ GroupedScope
 Introduction goes here.
 
 
-Example
-=======
+TODO
+====
 
-Example goes here.
+* Raise error if piggy back assoc uses :finder_sql option
+* Change these to account for :as option:
+  GroupedScope::HasManyAssociation
 
 
 Running Tests

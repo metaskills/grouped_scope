@@ -9,7 +9,7 @@ module GroupedScope
 
     def construct_sql_with_group_scope
       if @owner.class.grouped_scopes[@reflection.name]
-        @finder_sql = "#{@reflection.klass.table_name}.#{@reflection.primary_key_name} IN (#{@owner.group.quoted_ids})"
+        @finder_sql = "#{@reflection.quoted_table_name}.#{@reflection.primary_key_name} IN (#{@owner.group.quoted_ids})"
         @finder_sql << " AND (#{conditions})" if conditions
         @counter_sql = @finder_sql
       else

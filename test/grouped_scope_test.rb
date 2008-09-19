@@ -1,6 +1,6 @@
 require 'helper'
 
-class GroupedScopeTest < Test::Unit::TestCase
+class GroupedScopeTest < GroupedScope::TestCase
   
   def setup
     setup_environment

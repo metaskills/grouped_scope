@@ -14,9 +14,7 @@ module GroupedScope
                                "association. Make sure to call grouped_scope after the has_many associations."
         end
         grouped_scopes[association] = true
-        group_association_options = {:class_name => existing_assoc.class_name, :foreign_key => existing_assoc.primary_key_name}
-        group_association_options.merge!(existing_assoc.options)
-        has_many "group_#{association}".to_sym, group_association_options
+        has_many :"grouped_scope_#{association}", existing_assoc.options
       end
       include InstanceMethods
     end

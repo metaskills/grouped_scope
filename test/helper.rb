@@ -5,16 +5,9 @@ require 'quietbacktrace'
 require 'mocha'
 require File.join(File.dirname(__FILE__),'boot') unless defined?(ActiveRecord)
 require 'grouped_scope'
+require 'lib/test_case'
 
-ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__)+'/debug.log')
-ActiveRecord::Base.colorize_logging = false
-ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database => ':memory:'
-
-class Test::Unit::TestCase
-  
-  self.new_backtrace_silencer(:shoulda) { |line| line.include? 'lib/shoulda' }
-  self.new_backtrace_silencer(:mocha) { |line| line.include? 'lib/mocha' }
-  self.backtrace_silencers << :shoulda << :mocha
+class GroupedScope::TestCase
   
   def setup_environment(options={})
     options.reverse_merge! :group_column => :group_id
