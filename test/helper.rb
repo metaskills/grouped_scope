@@ -3,9 +3,10 @@ require 'rubygems'
 require 'shoulda'
 require 'quietbacktrace'
 require 'mocha'
-require File.join(File.dirname(__FILE__),'boot') unless defined?(ActiveRecord)
-require 'grouped_scope'
+require File.join(File.dirname(__FILE__),'lib/boot') unless defined?(ActiveRecord)
 require 'lib/test_case'
+require 'grouped_scope'
+
 
 class GroupedScope::TestCase
   
