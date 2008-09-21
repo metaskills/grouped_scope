@@ -13,8 +13,9 @@ module GroupedScope
           raise ArgumentError, "Cannot create a group scope for :#{association} because it is not a has_many " + 
                                "association. Make sure to call grouped_scope after the has_many associations."
         end
-        grouped_scopes[association] = true
-        has_many :"grouped_scope_#{association}", existing_assoc.options
+        grouped_scope_method = :"grouped_scope_#{association}"
+        grouped_scopes[grouped_scope_method] = true
+        has_many grouped_scope_method, existing_assoc.options
       end
       include InstanceMethods
     end

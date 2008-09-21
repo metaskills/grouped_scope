@@ -14,8 +14,9 @@ Factory.define :report do |r|
 end
 
 Factory.define :employee_with_reports, :class => 'Employee' do |e|
-  e.reports do |reports|
-    [reports.association(:report), reports.associations(:report)]
-  end
+  e.name      { "Factory Employee ##{Factory.next(:id)}" }
+  e.email     { Factory.next(:email) }
+  e.reports { |employee| [employee.association(:report),employee.association(:report)] }
 end
+
 

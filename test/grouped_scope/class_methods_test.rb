@@ -15,7 +15,7 @@ class ClassMethodsTest < GroupedScope::TestCase
     should 'add to inheritable attributes with new grouped_scope' do
       assert_nil Employee.grouped_scopes[:foobars]
       Employee.class_eval { has_many(:foobars) ; grouped_scope(:foobars) }
-      assert Employee.grouped_scopes[:foobars]
+      assert Employee.grouped_scopes[:grouped_scope_foobars]
     end
 
   end
