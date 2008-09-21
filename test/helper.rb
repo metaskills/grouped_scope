@@ -20,25 +20,29 @@ class GroupedScope::TestCase
   protected
   
   def setup_database(options)
-    ActiveRecord::Base.connection.create_table :employees, :force => true do |t|
-      t.column :name,         :string
-      t.column :email,        :string
-      t.column options[:group_column],  :integer
-    end
-    ActiveRecord::Base.connection.create_table :reports, :force => true do |t|
-      t.column :title,        :string
-      t.column :body,         :string
-      t.column :employee_id,  :integer
-    end
-    ActiveRecord::Base.connection.create_table :legacy_employees, :force => true, :id => false do |t|
-      t.column :name,         :string
-      t.column :email,        :string
-      t.column options[:group_column],  :integer
-    end
-    ActiveRecord::Base.connection.create_table :legacy_reports, :force => true do |t|
-      t.column :title,        :string
-      t.column :body,         :string
-      t.column :email,        :string
+    ActiveRecord::Base.class_eval do
+      silence do
+        connection.create_table :employees, :force => true do |t|
+          t.column :name,         :string
+          t.column :email,        :string
+          t.column options[:group_column],  :integer
+        end
+        connection.create_table :reports, :force => true do |t|
+          t.column :title,        :string
+          t.column :body,         :string
+          t.column :employee_id,  :integer
+        end
+        connection.create_table :legacy_employees, :force => true, :id => false do |t|
+          t.column :name,         :string
+          t.column :email,        :string
+          t.column options[:group_column],  :integer
+        end
+        connection.create_table :legacy_reports, :force => true do |t|
+          t.column :title,        :string
+          t.column :body,         :string
+          t.column :email,        :string
+        end
+      end
     end
   end
   
