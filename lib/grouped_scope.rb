@@ -1,8 +1,6 @@
 require 'grouped_scope/errors'
-require 'grouped_scope/proxy'
 require 'grouped_scope/grouping'
 require 'grouped_scope/self_grouping'
-require 'grouped_scope/group'
 require 'grouped_scope/class_methods'
 require 'grouped_scope/instance_methods'
 require 'grouped_scope/has_many_association'

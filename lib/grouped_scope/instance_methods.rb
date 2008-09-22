@@ -2,7 +2,7 @@ module GroupedScope
   module InstanceMethods
     
     def group
-      @group ||= Group.new(self)
+      @group ||= SelfGroupping.new(self)
     end
     
     

@@ -4,14 +4,13 @@ module GroupedScope
     include Enumerable
     
     delegate :size, :first, :last, :[], :inspect, :to => :group
-    delegate :primary_key, :quote_value, :columns_hash, :to => :owner_class
+    delegate :primary_key, :quote_value, :columns_hash, :to => :proxy_class
     
-    attr_reader :owner
+    attr_reader :proxy_owner
     
-    def initialize(owner)
-      raise ArgumentError,'An ActiveRecord owner object must be specified.' if owner.blank? || !owner.respond_to?(:new_record?)
-      raise NoGroupIdError.new(owner) unless owner.class.column_names.include?('group_id')
-      @owner = owner
+    def initialize(proxy_owner)
+      raise NoGroupIdError.new(proxy_owner) unless proxy_owner.class.column_names.include?('group_id')
+      @proxy_owner = proxy_owner
     end
     
     def ids
@@ -30,6 +29,10 @@ module GroupedScope
       group.each { |member| yield member }
     end
     
+    def respond_to?(method, include_private=false)
+      super || !proxy_class.grouped_scopes[method].blank?
+    end
+    
     
     protected
     
@@ -38,16 +41,16 @@ module GroupedScope
     end
     
     def no_group?
-      owner.group_id.blank?
+      proxy_owner.group_id.blank?
     end
     
     def find_selves(options={})
-      owner.class.find :all, options
+      proxy_owner.class.find :all, options
     end
     
     def group_scope_options
       return {} if all_grouped?
-      conditions = no_group? ? { primary_key => owner.id } : { :group_id => owner.group_id }
+      conditions = no_group? ? { primary_key => proxy_owner.id } : { :group_id => proxy_owner.group_id }
       { :conditions => conditions }
     end
     
@@ -55,8 +58,20 @@ module GroupedScope
       { :select => primary_key }.merge(group_scope_options)
     end
     
-    def owner_class
-      owner.class
+    def proxy_class
+      proxy_owner.class
+    end
+    
+    
+    private
+    
+    def method_missing(method, *args, &block)
+      if proxy_class.grouped_scopes[method]
+        grouped_assoc = proxy_owner.class.grouped_scope_for(method)
+        proxy_owner.send(grouped_assoc, *args, &block)
+      else
+        super
+      end
     end
     
   end
