@@ -41,6 +41,7 @@ module GroupedScope
     end
     
     def no_group?
+      # TODO [group_id] Abstractraction point.
       proxy_owner.group_id.blank?
     end
     
