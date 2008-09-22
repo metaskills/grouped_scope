@@ -5,13 +5,16 @@ module GroupedScope
       super
     end
     
+    def respond_to?(method, include_private=false)
+      super || !proxy_class.grouped_scopes[method].blank?
+    end
     
     protected
     
     def method_missing(method, *args, &block)
-      group_method = "group_#{method}".to_sym
       if proxy_class.grouped_scopes[method]
-        proxy_owner.send(group_method, *args, &block)
+        grouped_assoc = proxy_owner.class.grouped_scope_for(method)
+        proxy_owner.send(grouped_assoc, *args, &block)
       else
         super
       end
