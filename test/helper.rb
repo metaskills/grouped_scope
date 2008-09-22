@@ -42,12 +42,16 @@ class GroupedScope::TestCase
           t.column :body,         :string
           t.column :email,        :string
         end
+        connection.create_table :foo_bars, :force => true do |t|
+          t.column :foo,          :string
+          t.column :bar,          :string
+        end
       end
     end
   end
   
   def setup_models(options)
-    ['Employee','Report','LegacyEmployee','LegacyReport'].each do |klass|
+    ['Employee','Report','LegacyEmployee','LegacyReport','FooBar'].each do |klass|
       Object.send(:remove_const,klass) rescue nil
       Object.const_set klass, Class.new(ActiveRecord::Base)
     end
@@ -65,6 +69,10 @@ class GroupedScope::TestCase
     end
     LegacyReport.class_eval do
       belongs_to :employee, :class_name => 'LegacyEmployee'
+    end
+    FooBar.class_eval do
+      has_many :reports
+      grouped_scope :reports
     end
   end
   

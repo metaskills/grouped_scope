@@ -11,6 +11,7 @@ TODO
 * Raise error if piggy back assoc uses :finder_sql option
 * Change these to account for :as option:
   GroupedScope::HasManyAssociation
+* Turn on some mocha options/warnings.
 
 
 Running Tests

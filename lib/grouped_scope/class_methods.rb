@@ -21,11 +21,12 @@ module GroupedScope
       include InstanceMethods
     end
     
-    private
-    
     def grouped_scope_for(association)
       :"grouped_scope_#{association}"
     end
+    
+    
+    private
     
     def create_belongs_to_grouped_scope_grouping
       grouping_class_name = 'GroupedScope::Grouping'

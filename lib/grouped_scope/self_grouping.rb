@@ -6,7 +6,7 @@ module GroupedScope
     delegate :primary_key, :quote_value, :columns_hash, :to => :proxy_class
     
     [].methods.each do |m|
-      unless m =~ /(^__|^nil\?|^send|^object_id$|class|extend|^find$|count|sum|average|maximum|minimum|paginate|first|last|empty\?|respond_to\?)/
+      unless m =~ /(^__|^nil\?|^send|^object_id$|class|extend|respond_to\?)/
         delegate m, :to => :group_proxy
       end
     end
