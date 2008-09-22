@@ -35,18 +35,22 @@ class ClassMethodsTest < GroupedScope::TestCase
       Employee.class_eval { has_many(:foobars) ; grouped_scope(:foobars) }
     end
     
-    should 'create a has_many named :grouped_scope_* with orig association suffix' do
+    should 'create a has_many assoc named :grouped_scope_* using existing association as a suffix' do
       grouped_reports_assoc = Employee.reflect_on_association(:grouped_scope_reports)
       assert_instance_of ActiveRecord::Reflection::AssociationReflection, grouped_reports_assoc
     end
     
-    should 'mirror existing options for has_many association' do
+    should 'not add the :grouped_scope option to existing reflection' do
+      assert_nil Employee.reflect_on_association(:reports).options[:grouped_scope]
+    end
+    
+    should 'mirror existing options for has_many association, minus :grouped_scope option' do
       reports_assoc         = Employee.reflect_on_association(:reports)
       grouped_reports_assoc = Employee.reflect_on_association(:grouped_scope_reports)
-      assert_equal reports_assoc.options, grouped_reports_assoc.options
+      assert_equal({:grouped_scope=>true}, grouped_reports_assoc.options.diff(reports_assoc.options))
       reports_assoc         = LegacyEmployee.reflect_on_association(:reports)
       grouped_reports_assoc = LegacyEmployee.reflect_on_association(:grouped_scope_reports)
-      assert_equal reports_assoc.options, grouped_reports_assoc.options
+      assert_equal({:grouped_scope=>true}, grouped_reports_assoc.options.diff(reports_assoc.options))
     end
     
   end

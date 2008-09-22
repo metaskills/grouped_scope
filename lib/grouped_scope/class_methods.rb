@@ -15,7 +15,7 @@ module GroupedScope
         end
         grouped_scopes[association] = true
         grouped_assoc = grouped_scope_for(association)
-        has_many grouped_assoc, existing_assoc.options
+        has_many grouped_assoc, existing_assoc.options.dup
         reflect_on_association(grouped_assoc).options[:grouped_scope] = true
       end
       include InstanceMethods
