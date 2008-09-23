@@ -23,11 +23,7 @@ class ClassMethodsTest < GroupedScope::TestCase
   context 'For .grouped_scope' do
     
     should 'create a belongs_to :grouping association' do
-      assert Employee.reflect_on_association(:grouping)
-    end
-    
-    should 'raise an exception when has_many association does not exist' do
-      assert_raise(ArgumentError) { Employee.class_eval{grouped_scope(:foobars)} }
+      assert Employee.reflections[:grouping]
     end
     
     should 'not recreate belongs_to :grouping on additional calls' do
@@ -36,21 +32,17 @@ class ClassMethodsTest < GroupedScope::TestCase
     end
     
     should 'create a has_many assoc named :grouped_scope_* using existing association as a suffix' do
-      grouped_reports_assoc = Employee.reflect_on_association(:grouped_scope_reports)
+      grouped_reports_assoc = Employee.reflections[:grouped_scope_reports]
       assert_instance_of ActiveRecord::Reflection::AssociationReflection, grouped_reports_assoc
+      assert Factory(:employee).respond_to?(:grouped_scope_reports)
     end
     
     should 'not add the :grouped_scope option to existing reflection' do
-      assert_nil Employee.reflect_on_association(:reports).options[:grouped_scope]
+      assert_nil Employee.reflections[:reports].options[:grouped_scope]
     end
     
-    should 'mirror existing options for has_many association, minus :grouped_scope option' do
-      reports_assoc         = Employee.reflect_on_association(:reports)
-      grouped_reports_assoc = Employee.reflect_on_association(:grouped_scope_reports)
-      assert_equal({:grouped_scope=>true}, grouped_reports_assoc.options.diff(reports_assoc.options))
-      reports_assoc         = LegacyEmployee.reflect_on_association(:reports)
-      grouped_reports_assoc = LegacyEmployee.reflect_on_association(:grouped_scope_reports)
-      assert_equal({:grouped_scope=>true}, grouped_reports_assoc.options.diff(reports_assoc.options))
+    should 'have added the :grouped_scope option to new grouped reflection' do
+      assert Employee.reflections[:grouped_scope_reports].options[:grouped_scope]
     end
     
   end
