@@ -10,10 +10,6 @@ class HasManyAssociationTest < GroupedScope::TestCase
     
     context 'for an Employee' do
 
-      setup do
-        @con = ActiveRecord::Base.connection
-      end
-      
       should 'simply work' do
         @employee = Factory(:employee)
         assert_instance_of Array, @employee.reports

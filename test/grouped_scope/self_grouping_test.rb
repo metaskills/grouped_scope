@@ -6,43 +6,50 @@ class SelfGrouppingTest < GroupedScope::TestCase
     setup_environment
   end
   
-  
-  context 'Calling #group' do
+  context 'General behavior' do
     
-    context 'in general behavior' do
-      
-      setup do
-        @employee = Factory(:employee)
-      end
-      
-      should 'return an array' do
-        assert_instance_of Array, @employee.group
-      end
-      
-      should 'respond true to grouped associations' do
-        assert @employee.group.respond_to?(:reports)
-      end
-      
-      context 'for Array delegates' do
+    setup do
+      @employee = Factory(:employee)
+    end
+    
+    should 'return an array' do
+      assert_instance_of Array, @employee.group
+    end
+    
+    should 'respond true to grouped associations' do
+      assert @employee.group.respond_to?(:reports)
+    end
+    
+    context 'for Array delegates' do
 
-        should 'respond to first/last' do
-          [:first,:last].each do |method|
-            assert @employee.group.respond_to?(method), "Should respond to #{method.inspect}"
-          end
+      should 'respond to first/last' do
+        [:first,:last].each do |method|
+          assert @employee.group.respond_to?(method), "Should respond to #{method.inspect}"
         end
-        
-        should 'respond to each' do
-          assert @employee.group.respond_to?(:each)
-          @employee.group.each do |employee|
-            # FIXME: Figure why this does not work.
-            # assert_instance_of Employee, employee
-            assert_equal Employee.name, employee.class.name
-          end
+      end
+      
+      should 'respond to each' do
+        assert @employee.group.respond_to?(:each)
+        @employee.group.each do |employee|
+          # FIXME: Figure out why this does not work: assert_instance_of Employee, employee
+          assert_equal Employee.name, employee.class.name
         end
-        
       end
       
     end
+    
+  end
+  
+  
+  
+  
+  
+  
+  context 'Calling #group' do
+    
+
+      
+
     
     context 'with no group_id schema' do
 
