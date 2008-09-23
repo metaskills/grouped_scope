@@ -8,10 +8,16 @@ module GroupedScope
     def grouped_scope(*associations)
       create_belongs_to_for_grouped_scope
       associations.each { |association| AssociationReflection.new(self,association) }
-      include InstanceMethods
+      create_grouped_scope_accessor
     end
     
     private
+    
+    def create_grouped_scope_accessor
+      define_method(:group) do
+        @group ||= SelfGroupping.new(self)
+      end
+    end
     
     def create_belongs_to_for_grouped_scope
       grouping_class_name = 'GroupedScope::Grouping'
