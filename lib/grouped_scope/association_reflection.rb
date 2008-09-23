@@ -7,6 +7,7 @@ module GroupedScope
         delegate m, :to => :ungrouped_reflection
       end
     end
+    delegate :derive_class_name, :to => :ungrouped_reflection
     
     def initialize(active_record,ungrouped_name)
       @active_record = active_record
