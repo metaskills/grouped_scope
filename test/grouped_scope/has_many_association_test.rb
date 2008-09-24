@@ -26,6 +26,32 @@ class HasManyAssociationTest < GroupedScope::TestCase
         end
       end
       
+      context 'calling association extensions' do
+
+        setup do
+          @e1 = Factory(:employee_with_reports, :group_id => 1)
+          @e2 = Factory(:employee, :group_id => 1)
+          @urget_report = Factory.build(:report, :title => 'URGET')
+          @e1.reports << @urget_report
+          @e1.save!
+        end
+        
+        should 'find urget report via normal ungrouped association' do
+          assert_equal [@urget_report], @e1.reports(true).urget
+        end
+        
+        should 'find urget report via grouped reflection' do
+          assert_equal [@urget_report], @e2.group.reports.urget
+        end
+        
+        should 'use extension sql along with group reflection' do
+          assert_sql(/'URGET'/,/"reports".employee_id IN/) do
+            @e2.group.reports.urget
+          end
+        end
+
+      end
+      
     end
     
     context 'for a LegacyEmployee' do

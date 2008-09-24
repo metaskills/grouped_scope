@@ -51,7 +51,11 @@ class GroupedScope::TestCase
 end
 
 class Employee < ActiveRecord::Base
-  has_many :reports
+  has_many :reports do
+    def urget
+      all(:conditions => {:title => 'URGET'})
+    end
+  end
   grouped_scope :reports
 end
 
