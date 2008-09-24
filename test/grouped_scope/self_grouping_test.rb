@@ -44,8 +44,7 @@ class SelfGrouppingTest < GroupedScope::TestCase
       should 'respond to each' do
         assert @employee.group.respond_to?(:each)
         @employee.group.each do |employee|
-          # FIXME: Figure out why this does not work: assert_instance_of Employee, employee
-          assert_equal Employee.name, employee.class.name
+          assert_instance_of Employee, employee
         end
       end
       

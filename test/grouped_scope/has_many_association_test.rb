@@ -9,16 +9,22 @@ class HasManyAssociationTest < GroupedScope::TestCase
   context 'For existing ungrouped has_many associations' do
     
     context 'for an Employee' do
-
+      
+      setup { @employee = Factory(:employee) }
+      
       should 'simply work' do
-        @employee = Factory(:employee)
         assert_instance_of Array, @employee.reports
       end
       
-      should 'scope existing associations to owner' do
-        @employee = Factory(:employee_with_reports)
-        assert_sql(/"reports".employee_id = 1/) do
-          @employee.reports.reload
+      should 'scope existing association to owner' do
+        assert_sql(/"reports".employee_id = #{@employee.id}/) do
+          @employee.reports(true)
+        end
+      end
+      
+      should 'scope group association to group' do
+        assert_sql(/"reports".employee_id IN \(#{@employee.id}\)/) do
+          @employee.group.reports(true)
         end
       end
       
