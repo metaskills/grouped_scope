@@ -16,7 +16,24 @@ end
 Factory.define :employee_with_reports, :class => 'Employee' do |e|
   e.name      { "Factory Employee ##{Factory.next(:id)}" }
   e.email     { Factory.next(:email) }
-  e.reports { |employee| [employee.association(:report),employee.association(:report)] }
+  e.reports   { |employee| [employee.association(:report),employee.association(:report)] }
+end
+
+
+Factory.define :legacy_employee do |e|
+  e.name      { "Legacy Factory Employee ##{Factory.next(:id)}" }
+  e.email     { Factory.next(:email) }
+end
+
+Factory.define :legacy_report do |r|
+  r.title     { Factory.next(:title) }
+  r.body      'Legacy bla bla. Legacy. Legacy bla.'
+end
+
+Factory.define :legacy_employee_with_reports, :class => 'LegacyEmployee' do |e|
+  e.name      { "Legacy Factory Employee ##{Factory.next(:id)}" }
+  e.email     { Factory.next(:email) }
+  e.reports   { |employee| [employee.association(:legacy_report),employee.association(:legacy_report)] }
 end
 
 

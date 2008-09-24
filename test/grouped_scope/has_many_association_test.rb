@@ -10,10 +10,8 @@ class HasManyAssociationTest < GroupedScope::TestCase
     
     context 'for an Employee' do
       
-      setup { @employee = Factory(:employee) }
-      
-      should 'simply work' do
-        assert_instance_of Array, @employee.reports
+      setup do 
+        @employee = Factory(:employee)
       end
       
       should 'scope existing association to owner' do
@@ -29,6 +27,27 @@ class HasManyAssociationTest < GroupedScope::TestCase
       end
       
     end
+    
+    context 'for a LegacyEmployee' do
+
+      setup do
+        @employee = Factory(:legacy_employee)
+      end
+
+      should 'scope existing association to owner' do
+        assert_sql(/"legacy_reports".email = '#{@employee.id}'/) do
+          @employee.reports(true)
+        end
+      end
+      
+      should 'scope group association to group' do
+        assert_sql(/"legacy_reports".email IN \('#{@employee.id}'\)/) do
+          @employee.group.reports(true)
+        end
+      end
+      
+    end
+    
     
   end
   
