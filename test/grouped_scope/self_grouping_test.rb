@@ -113,8 +113,9 @@ class SelfGrouppingTest < GroupedScope::TestCase
       end
       
       should 'allow proxy owner to define all grouped which ignores group_id schema' do
-        def @e1.all_grouped? ; true ; end
-        assert_same_elements [@e1,@e2,@e3,@e4], @e1.group
+        def @e2.all_grouped? ; true ; end
+        assert_same_elements [@e1,@e2,@e3,@e4], @e2.group
+        assert_same_elements @e1.reports + @e3.reports, @e2.group.reports
       end
       
     end
