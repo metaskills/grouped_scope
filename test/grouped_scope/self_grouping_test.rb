@@ -29,7 +29,7 @@ class SelfGrouppingTest < GroupedScope::TestCase
     end
     
     should 'raise a GroupedScope::NoGroupIdError exception for objects with no group_id schema' do
-      assert !FooBar.column_names.include?('group_id')
+      assert_does_not_contain FooBar.column_names, 'group_id'
       assert_raise(GroupedScope::NoGroupIdError) { GroupedScope::SelfGroupping.new(FooBar.new) }
     end
     
@@ -53,7 +53,11 @@ class SelfGrouppingTest < GroupedScope::TestCase
     
   end
   
-  context 'Created via calling #group' do
+  context 'Calling #group' do
+    
+    should 'return an array' do
+      assert_instance_of Array, Factory(:employee).group
+    end
     
     context 'with a NIL group_id' do
       
@@ -61,12 +65,12 @@ class SelfGrouppingTest < GroupedScope::TestCase
         @employee = Factory(:employee)
       end
       
-      should 'return an array of one' do
+      should 'return a collection of one' do
         assert_equal 1, @employee.group.size
       end
       
       should 'include self in group' do
-        assert @employee.group.include?(@employee)
+        assert_contains @employee.group, @employee
       end
       
     end
@@ -77,33 +81,31 @@ class SelfGrouppingTest < GroupedScope::TestCase
         @employee = Factory(:employee, :group_id => 1)
       end
       
-      should 'return an array of one' do
+      should 'return a collection of one' do
         assert_equal 1, @employee.group.size
       end
       
       should 'include self in group' do
-        assert @employee.group.include?(@employee)
+        assert_contains @employee.group, @employee
       end
       
     end
     
-    context 'with different groups' do
+    context 'with different groups available' do
       
       setup do
-        @e1_g1 = Factory(:employee_with_reports, :group_id => 1)
-        @e2_g1 = Factory(:employee, :group_id => 1)
-        @e2_g2 = Factory(:employee_with_reports, :group_id => 2)
-        @e2_g2 = Factory(:employee, :group_id => 2)
+        @e1 = Factory(:employee_with_reports, :group_id => 1)
+        @e2 = Factory(:employee, :group_id => 1)
+        @e3 = Factory(:employee_with_reports, :group_id => 2)
+        @e4 = Factory(:employee, :group_id => 2)
       end
       
-      should 'have created factories in a sane manner' do
-        # raise Employee.reflections[:reports].inspect
-        # raise Employee.reflections[:grouped_scope_reports].inspect
-        # assert_equal @e1_g1.reports.size, @e1_g1.group.reports.size
-        
-        # @e1_g1.reports
-        # @e1_g1.group.reports
-        # @e1_g1.grouped_scope_reports
+      should 'return a collection of group members' do
+        assert_equal 2, @e1.group.size
+      end
+      
+      should 'include all group members' do
+        assert_same_elements @e1.group, [@e1,@e2]
       end
       
     end

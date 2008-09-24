@@ -7,14 +7,13 @@ require File.join(File.dirname(__FILE__),'lib/boot') unless defined?(ActiveRecor
 require 'factory_girl'
 require 'lib/test_case'
 require 'grouped_scope'
-
+require 'models'
 
 class GroupedScope::TestCase
   
   def setup_environment(options={})
     options.reverse_merge! :group_column => :group_id
     setup_database(options)
-    setup_models(options)
   end
   
   protected
@@ -49,33 +48,6 @@ class GroupedScope::TestCase
       end
     end
   end
-  
-  def setup_models(options)
-    ['Employee','Report','LegacyEmployee','LegacyReport','FooBar'].each do |klass|
-      Object.send(:remove_const,klass) rescue nil
-      Object.const_set klass, Class.new(ActiveRecord::Base)
-    end
-    Employee.class_eval do
-      has_many :reports
-      grouped_scope :reports
-    end
-    Report.class_eval do
-      belongs_to :employee
-    end
-    LegacyEmployee.class_eval do
-      set_primary_key :email
-      has_many :reports, :class_name => 'LegacyReport', :foreign_key => 'email'
-      grouped_scope :reports
-    end
-    LegacyReport.class_eval do
-      belongs_to :employee, :class_name => 'LegacyEmployee'
-    end
-    FooBar.class_eval do
-      has_many :reports
-      grouped_scope :reports
-    end
-  end
-  
   
 end
 
