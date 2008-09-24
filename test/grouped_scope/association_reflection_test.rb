@@ -62,6 +62,15 @@ class AssociationReflectionTest < GroupedScope::TestCase
       assert_equal @ungrouped_reflection.send(:derive_primary_key_name), @grouped_reflection.send(:derive_primary_key_name)
     end
     
+    should 'honor explicit legacy reports association options like class_name and foreign_key' do
+      @ungrouped_reflection = LegacyEmployee.reflections[:reports]
+      @grouped_reflection   = LegacyEmployee.reflections[:grouped_scope_reports]
+      [:class_name,:primary_key_name].each do |m|
+        assert_equal @ungrouped_reflection.send(m), @grouped_reflection.send(m),
+          "The method #{m.inspect} does not appear to be proxied to the ungrouped reflection."
+      end
+    end
+    
   end
   
   

@@ -107,7 +107,7 @@ class SelfGrouppingTest < GroupedScope::TestCase
         assert_same_elements [@e1,@e2], @e1.group
       end
       
-      should 'member to find grouped associations of other member' do
+      should 'allow member to find grouped associations of other member' do
         assert_same_elements @e1.reports, @e2.group.reports
       end
       
@@ -118,6 +118,22 @@ class SelfGrouppingTest < GroupedScope::TestCase
       end
       
     end
+    
+    context 'with different groups in legacy schema' do
+      
+      setup do
+        @e1 = Factory(:legacy_employee_with_reports, :group_id => 1)
+        @e2 = Factory(:legacy_employee, :group_id => 1)
+        @e3 = Factory(:legacy_employee_with_reports, :group_id => 2)
+        @e4 = Factory(:legacy_employee, :group_id => 2)
+      end
+      
+      should 'honor legacy reports association options like class_name and foreign_key' do
+        @e2.group.reports.all? { |r| r.is_a?(LegacyReport) }
+      end
+      
+    end
+    
     
   end
   
