@@ -37,7 +37,7 @@ module GroupedScope
     end
     
     def all_grouped?
-      false
+      proxy_owner.all_grouped? rescue false
     end
     
     def no_group?

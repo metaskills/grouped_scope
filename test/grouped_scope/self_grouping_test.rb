@@ -105,7 +105,16 @@ class SelfGrouppingTest < GroupedScope::TestCase
       end
       
       should 'include all group members' do
-        assert_same_elements @e1.group, [@e1,@e2]
+        assert_same_elements [@e1,@e2], @e1.group
+      end
+      
+      should 'member to find grouped associations of other member' do
+        assert_same_elements @e1.reports, @e2.group.reports
+      end
+      
+      should 'allow proxy owner to define all grouped which ignores group_id schema' do
+        def @e1.all_grouped? ; true ; end
+        assert_same_elements [@e1,@e2,@e3,@e4], @e1.group
       end
       
     end
