@@ -28,7 +28,7 @@ class AssociationReflectionTest < GroupedScope::TestCase
         Employee.reflections[:grouped_scope_reports].ungrouped_reflection
     end
     
-    should 'delegate core instance methods to #ungrouped_reflection' do
+    should 'delegate instance methods to #ungrouped_reflection' do
       [:class_name,:klass,:table_name,:quoted_table_name,:primary_key_name,:active_record,
        :association_foreign_key,:counter_cache_column,:source_reflection].each do |m|
         assert_equal Employee.reflections[:reports].send(m), 

@@ -1,13 +1,12 @@
 module GroupedScope
   class AssociationReflection < ActiveRecord::Reflection::AssociationReflection
     
-    (ActiveRecord::Reflection::MacroReflection.instance_methods + 
-     ActiveRecord::Reflection::AssociationReflection.instance_methods).uniq.each do |m| 
-      unless m =~ /^(__|nil\?|send)|^(object_id|options|name)$/
-        delegate m, :to => :ungrouped_reflection
-      end
+    ((ActiveRecord::Reflection::AssociationReflection.instance_methods-Class.instance_methods) +
+    (ActiveRecord::Reflection::AssociationReflection.private_instance_methods-Class.private_instance_methods)).each do |m| 
+      undef_method(m)
     end
-    delegate :derive_class_name, :to => :ungrouped_reflection
+    
+    attr_accessor :name, :options
     
     def initialize(active_record,ungrouped_name)
       @active_record = active_record
@@ -24,6 +23,10 @@ module GroupedScope
     
     
     private
+    
+    def method_missing(method, *args, &block)
+      ungrouped_reflection.send(method, *args, &block)
+    end
     
     def verify_ungrouped_reflection
       if ungrouped_reflection.blank? || ungrouped_reflection.macro.to_s !~ /has_many|has_and_belongs_to_many/
