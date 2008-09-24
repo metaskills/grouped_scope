@@ -101,7 +101,7 @@ class SelfGrouppingTest < GroupedScope::TestCase
         # raise Employee.reflections[:grouped_scope_reports].inspect
         # assert_equal @e1_g1.reports.size, @e1_g1.group.reports.size
         
-        @e1_g1.reports
+        # @e1_g1.reports
         # @e1_g1.group.reports
         # @e1_g1.grouped_scope_reports
       end

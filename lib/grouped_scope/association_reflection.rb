@@ -37,7 +37,10 @@ module GroupedScope
     end
     
     def create_grouped_association
-      active_record.send :has_many, name, options
+      active_record.send(macro, name, options)
+      association_proxy_class = options[:through] ? ActiveRecord::Associations::HasManyThroughAssociation : ActiveRecord::Associations::HasManyAssociation
+      active_record.send(:collection_reader_method, self, association_proxy_class)
+      
       active_record.reflections[name] = self
       active_record.grouped_scopes[@ungrouped_name] = true
       options[:grouped_scope] = true
