@@ -52,15 +52,19 @@ end
 
 class Employee < ActiveRecord::Base
   has_many :reports do
-    def urget
-      all(:conditions => {:title => 'URGET'})
+    def urgent
+      all(:conditions => {:title => 'URGENT'})
     end
   end
   grouped_scope :reports
 end
 
 class Report < ActiveRecord::Base
+  named_scope :with_urgent_title, :conditions => {:title => 'URGENT'}
+  named_scope :with_urgent_body, :conditions => "body LIKE '%URGENT%'"
   belongs_to :employee
+  def urgent_title? ; self[:title] == 'URGENT' ; end
+  def urgent_body? ; self[:body] =~ /URGENT/ ; end
 end
 
 class LegacyEmployee < ActiveRecord::Base

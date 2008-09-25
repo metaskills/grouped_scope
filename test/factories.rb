@@ -19,6 +19,13 @@ Factory.define :employee_with_reports, :class => 'Employee' do |e|
   e.reports   { |employee| [employee.association(:report),employee.association(:report)] }
 end
 
+Factory.define :employee_with_urgent_reports, :class => 'Employee' do |e|
+  e.name      { "Factory Employee ##{Factory.next(:id)}" }
+  e.email     { Factory.next(:email) }
+  e.reports   { |employee| [employee.association(:report), employee.association(:report,:title=>'URGENT'), 
+                            employee.association(:report), employee.association(:report,:body=>'This is URGENT.')] }
+end
+
 
 Factory.define :legacy_employee do |e|
   e.name      { "Legacy Factory Employee ##{Factory.next(:id)}" }

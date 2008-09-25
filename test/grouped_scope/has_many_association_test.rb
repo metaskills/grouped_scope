@@ -26,40 +26,66 @@ class HasManyAssociationTest < GroupedScope::TestCase
         end
       end
       
-      context 'calling association extensions' do
-
+      context 'training association extensions' do
+      
         setup do
-          @e1 = Factory(:employee_with_reports, :group_id => 1)
+          @e1 = Factory(:employee_with_urgent_reports, :group_id => 1)
           @e2 = Factory(:employee, :group_id => 1)
-          @urget_report = Factory.build(:report, :title => 'URGET')
-          @e1.reports << @urget_report
-          @e1.save!
+          @urgent_reports = @e1.reports.select(&:urgent_title?)
         end
         
-        should 'find urget report via normal ungrouped association' do
-          assert_equal [@urget_report], @e1.reports(true).urget
+        should 'find urgent report via normal ungrouped association' do
+          assert_same_elements @urgent_reports, @e1.reports(true).urgent
         end
         
-        should 'find urget report via grouped reflection' do
-          assert_equal [@urget_report], @e2.group.reports.urget
+        should 'find urgent report via grouped reflection' do
+          assert_same_elements @urgent_reports, @e2.group.reports(true).urgent
         end
         
-        should 'use extension sql along with group reflection' do
-          assert_sql(/'URGET'/,/"reports".employee_id IN/) do
-            @e2.group.reports.urget
+        should 'use assoc extension SQL along with group reflection' do
+          assert_sql(/'URGENT'/,/"reports".employee_id IN/) do
+            @e2.group.reports(true).urgent
           end
         end
-
+      
       end
+      
+      context 'training named scopes' do
+    
+        setup do
+          @e1 = Factory(:employee_with_urgent_reports, :group_id => 1)
+          @e2 = Factory(:employee, :group_id => 1)
+          @urgent_titles = @e1.reports.select(&:urgent_title?)
+          @urgent_bodys = @e1.reports.select(&:urgent_body?)
+        end
+        
+        should 'find urgent reports via normal named scopes by normal owner' do
+          assert_same_elements @urgent_titles, @e1.reports(true).with_urgent_title
+          assert_same_elements @urgent_bodys, @e1.reports(true).with_urgent_body
+        end
+        
+        should 'find urgent reports via group reflection by group member' do
+          assert_same_elements @urgent_titles, @e2.group.reports(true).with_urgent_title
+          assert_same_elements @urgent_bodys, @e2.group.reports(true).with_urgent_body
+        end
+        
+        should 'use named scope SQL along with group reflection' do
+          assert_sql(/body LIKE '%URGENT%'/,/"title" = 'URGENT'/,/employee_id IN/) do
+            @e2.group.reports(true).with_urgent_title.with_urgent_body.inspect
+          end
+        end
+    
+      end
+      
       
     end
     
     context 'for a LegacyEmployee' do
-
+    
       setup do
         @employee = Factory(:legacy_employee)
       end
-
+    
       should 'scope existing association to owner' do
         assert_sql(/"legacy_reports".email = '#{@employee.id}'/) do
           @employee.reports(true)
