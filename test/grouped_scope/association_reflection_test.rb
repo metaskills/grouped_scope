@@ -22,10 +22,6 @@ class AssociationReflectionTest < GroupedScope::TestCase
       end
 
     end
-    
-    should_eventually 'TEST COLLECTION READER METHOD GENERATION FOR ALL ASSOC TYPES' do
-      
-    end
 
   end
   
