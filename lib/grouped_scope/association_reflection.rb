@@ -21,6 +21,10 @@ module GroupedScope
       @active_record.reflections[@ungrouped_name]
     end
     
+    def respond_to?(method, include_private=false)
+      super || ungrouped_reflection.respond_to?(method,include_private)
+    end
+    
     
     private
     

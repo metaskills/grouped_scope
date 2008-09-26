@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../helper'
 
-class HasManyAssociationTest < GroupedScope::TestCase
+class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
   
   def setup
     setup_environment
@@ -67,7 +67,7 @@ class HasManyAssociationTest < GroupedScope::TestCase
       end
       
       should 'use assoc extension SQL along with group reflection' do
-        assert_sql(/'URGENT'/,/"reports".employee_id IN/) do
+        assert_sql(/'URGENT'/,/"?reports"?.employee_id IN/) do
           @e2.group.reports(true).urgent
         end
       end
@@ -98,7 +98,7 @@ class HasManyAssociationTest < GroupedScope::TestCase
           @e2.group.reports(true).with_urgent_title.with_urgent_body.inspect
         end
       end
-  
+      
     end
     
   end
@@ -110,13 +110,13 @@ class HasManyAssociationTest < GroupedScope::TestCase
     end
   
     should 'scope existing association to owner' do
-      assert_sql(/"legacy_reports".email = '#{@employee.id}'/) do
+      assert_sql(/"?legacy_reports"?.email = '#{@employee.id}'/) do
         @employee.reports(true)
       end
     end
     
     should 'scope group association to group' do
-      assert_sql(/"legacy_reports".email IN \('#{@employee.id}'\)/) do
+      assert_sql(/"?legacy_reports"?.email IN \('#{@employee.id}'\)/) do
         @employee.group.reports(true)
       end
     end

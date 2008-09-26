@@ -5,6 +5,8 @@ GroupedScope aims to make two things easier in your ActiveRecord models. First, 
 easy way to group objects, second, to allow the group to share associated object via existing 
 has_many relationships. See installation and usage for more details.
 
+By the way, this plugin has been tested with rails 1.2.6 and 2.1.1.
+
 
 === Installation & Usage
 
@@ -71,6 +73,23 @@ extensions defined on the original has_many. For instance:
 * Add/test has_and_belongs_to_many
 * Raise errors and/or support :finder_sql/:counter_sql.
 * Add a user definable group_id schema.
+
+
+=== Helping Our & Running Tests
+
+Running the test suite is easy to do. Just make sure you have the following gems installed. 
+
+* shoulda
+* quitebacktrace
+* mocha
+* factory_girl
+
+If you want to run the tests for a specific version of rails in gems (other than the latest), 
+then you can set the RAILS_VERSION environment variable. For example `env RAILS_VERSION=1.2.6 autotest`. 
+When doing this you also need to make sure that you download version 4.1 of shoulda (not the gem) 
+and place its lib contents into `test/lib/shoulda` and `test/lib/shoulda.rb`. The reason is that 
+the latest should gem require ActiveSupport greater than 2.0.
+
 
 
 Copyright (c) 2008 Ken Collins, Decisiv Inc.

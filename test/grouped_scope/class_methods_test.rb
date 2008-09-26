@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../helper'
 
-class ClassMethodsTest < GroupedScope::TestCase
+class GroupedScope::ClassMethodsTest < GroupedScope::TestCase
   
   def setup
     setup_environment

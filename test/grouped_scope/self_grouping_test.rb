@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../helper'
 
-class SelfGrouppingTest < GroupedScope::TestCase
+class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
   
   def setup
     setup_environment

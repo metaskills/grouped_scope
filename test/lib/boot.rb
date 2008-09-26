@@ -25,13 +25,9 @@ end
 require 'active_record'
 require 'active_support'
 
-def enable_named_scope
-  return if defined? ActiveRecord::NamedScope
+unless defined? ActiveRecord::NamedScope
   require 'named_scope'
   require 'named_scope_patch'
-  ActiveRecord::Base.class_eval do
-    include GroupedScope::NamedScope
-  end
+  ActiveRecord::Base.send :include, GroupedScope::NamedScope
 end
 
-enable_named_scope

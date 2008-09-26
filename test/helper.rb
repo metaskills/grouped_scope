@@ -61,7 +61,7 @@ class GroupedScope::TestCase
 end
 
 class Employee < ActiveRecord::Base
-  has_many :reports do ; def urgent ; all(:conditions => {:title => 'URGENT'}) ; end ; end
+  has_many :reports do ; def urgent ; find(:all,:conditions => {:title => 'URGENT'}) ; end ; end
   has_many :taxonomies, :as => :classable
   has_many :department_memberships
   has_many :departments, :through => :department_memberships
@@ -93,6 +93,7 @@ class LegacyEmployee < ActiveRecord::Base
   set_primary_key :email
   has_many :reports, :class_name => 'LegacyReport', :foreign_key => 'email'
   grouped_scope :reports
+  alias_method :email=, :id=
 end
 
 class LegacyReport < ActiveRecord::Base

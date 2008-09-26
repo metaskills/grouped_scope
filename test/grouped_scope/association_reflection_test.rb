@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../helper'
 
-class AssociationReflectionTest < GroupedScope::TestCase
+class GroupedScope::AssociationReflectionTest < GroupedScope::TestCase
   
   def setup
     setup_environment
@@ -38,8 +38,11 @@ class AssociationReflectionTest < GroupedScope::TestCase
     end
     
     should 'delegate instance methods to #ungrouped_reflection' do
-      [:class_name,:klass,:table_name,:quoted_table_name,:primary_key_name,:active_record,
-       :association_foreign_key,:counter_cache_column,:source_reflection].each do |m|
+      methods = [:class_name,:klass,:table_name,:primary_key_name,:active_record,
+                 :association_foreign_key,:counter_cache_column,:source_reflection]
+      # CHANGED [Rails 1.2.6] Account for quoted_table_name.
+      methods << :quoted_table_name if @ungrouped_reflection.respond_to?(:quoted_table_name)
+      methods.each do |m|
         assert_equal @ungrouped_reflection.send(m), @grouped_reflection.send(m),
           "The method #{m.inspect} does not appear to be proxied to the ungrouped reflection."
       end
@@ -51,11 +54,17 @@ class AssociationReflectionTest < GroupedScope::TestCase
     end
     
     should 'derive class name to same as ungrouped reflection' do
-      assert_equal @ungrouped_reflection.send(:derive_class_name), @grouped_reflection.send(:derive_class_name)
+      # CHANGED [Rails 1.2.6] Account for quoted_table_name.
+      if @ungrouped_reflection.respond_to?(:derive_class_name)
+        assert_equal @ungrouped_reflection.send(:derive_class_name), @grouped_reflection.send(:derive_class_name)
+      end
     end
     
     should 'derive primary key name to same as ungrouped reflection' do
-      assert_equal @ungrouped_reflection.send(:derive_primary_key_name), @grouped_reflection.send(:derive_primary_key_name)
+      # CHANGED [Rails 1.2.6] Account for quoted_table_name.
+      if @ungrouped_reflection.respond_to?(:derive_primary_key_name)
+        assert_equal @ungrouped_reflection.send(:derive_primary_key_name), @grouped_reflection.send(:derive_primary_key_name)
+      end
     end
     
     should 'honor explicit legacy reports association options like class_name and foreign_key' do
