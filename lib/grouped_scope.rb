@@ -8,7 +8,7 @@ require 'grouped_scope/has_many_through_association'
 
 module GroupedScope
   
-  VERSION = '0.1.0'
+  VERSION = '0.1'
     
 end
 
