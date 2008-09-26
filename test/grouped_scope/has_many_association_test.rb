@@ -14,13 +14,13 @@ class HasManyAssociationTest < GroupedScope::TestCase
     end
     
     should 'scope existing association to owner' do
-      assert_sql(/"reports".employee_id = #{@employee.id}/) do
+      assert_sql(/employee_id = #{@employee.id}/) do
         @employee.reports(true)
       end
     end
     
     should 'scope group association to group' do
-      assert_sql(/"reports".employee_id IN \(#{@employee.id}\)/) do
+      assert_sql(/employee_id IN \(#{@employee.id}\)/) do
         @employee.group.reports(true)
       end
     end

@@ -12,7 +12,7 @@ TODO
 * Change these to account for :as option:
   GroupedScope::HasManyAssociation
 * Turn on some mocha options/warnings.
-
+* Support finder sql
 
 Running Tests
 =============

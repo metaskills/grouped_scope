@@ -28,3 +28,5 @@ module GroupedScope
     
   end
 end
+
+ActiveRecord::Base.send :extend, GroupedScope::ClassMethods
