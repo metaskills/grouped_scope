@@ -96,7 +96,7 @@ class LegacyEmployee < ActiveRecord::Base
 end
 
 class LegacyReport < ActiveRecord::Base
-  belongs_to :employee, :class_name => 'LegacyEmployee'
+  belongs_to :employee, :class_name => 'LegacyEmployee', :foreign_key => 'email'
 end
 
 class FooBar < ActiveRecord::Base
