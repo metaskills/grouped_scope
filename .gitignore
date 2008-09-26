@@ -1,3 +1,4 @@
 .DS_Store
 test/debug.log
+test/lib/shoulda*
 autotest

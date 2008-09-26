@@ -1,3 +1,4 @@
+require 'rubygems'
 
 plugin_root     = File.expand_path(File.join(File.dirname(__FILE__),'..'))
 framework_root  = ["#{plugin_root}/rails", "#{plugin_root}/../../rails"].detect { |p| File.directory? p }
@@ -21,6 +22,16 @@ else
   end
 end
 
-require 'activerecord'
+require 'active_record'
 require 'active_support'
 
+def enable_named_scope
+  return if defined? ActiveRecord::NamedScope
+  require 'named_scope'
+  require 'named_scope_patch'
+  ActiveRecord::Base.class_eval do
+    include GroupedScope::NamedScope
+  end
+end
+
+enable_named_scope
