@@ -1,0 +1,12 @@
+*0.2* (September 29th 2008)
+
+* Add WillPaginate test and confirm grouped scope, named scope, and will paginate all play together.  [Ken Collins]
+
+* Stronger back port for named_scope in 1.2.6 and 2.0.4. Fixed bug where association proxy owner scope was after named_scope calls.  [Ken Collins]
+
+
+*0.1* (September 26th, 2008)
+
+* Initial public release.  [Ken Collins]
+
+
