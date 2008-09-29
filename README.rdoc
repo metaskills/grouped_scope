@@ -12,7 +12,7 @@ By the way, this plugin has been tested with rails 1.2.6 and 2.1.1.
 
 From your project's RAILS_ROOT, run:
 
-  script/plugin install git://github.com/metaskills/grouped_scope.git
+  ./script/plugin install git://github.com/metaskills/grouped_scope.git
 
 To use GroupedScope on a model it must have a :group_id column.
 
@@ -68,6 +68,7 @@ extensions defined on the original has_many. For instance:
 
 === Todo List
 
+* Go back and start adding some rdocs.
 * Add more GroupedScope::Grouping code.
 * Add polymorphic support.
 * Add/test has_and_belongs_to_many
