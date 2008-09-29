@@ -67,8 +67,9 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
       end
       
       should 'use assoc extension SQL along with group reflection' do
-        assert_sql(/'URGENT'/,/"?reports"?.employee_id IN/) do
-          @e2.group.reports(true).urgent
+        sql_regex = /SELECT \* FROM "?reports"? *WHERE \("?reports"?.employee_id IN \(2,3\) AND \("?reports"?."?title"? = 'URGENT'\)\)/
+        assert_sql(sql_regex) do
+          @e2.group.reports.urgent
         end
       end
     
