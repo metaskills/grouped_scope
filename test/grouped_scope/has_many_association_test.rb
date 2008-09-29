@@ -67,8 +67,7 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
       end
       
       should 'use assoc extension SQL along with group reflection' do
-        sql_regex = /SELECT \* FROM "?reports"? *WHERE \("?reports"?.employee_id IN \(2,3\) AND \("?reports"?."?title"? = 'URGENT'\)\)/
-        assert_sql(sql_regex) do
+        assert_sql(select_from_reports, where_for_groups, where_for_urgent_title) do
           @e2.group.reports.urgent
         end
       end
@@ -76,7 +75,7 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
     end
     
     context 'training named scopes' do
-  
+      
       setup do
         @e1 = Factory(:employee_with_urgent_reports, :group_id => 1)
         @e2 = Factory(:employee, :group_id => 1)
@@ -95,8 +94,8 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
       end
       
       should 'use named scope SQL along with group reflection' do
-        assert_sql(/body LIKE '%URGENT%'/,/"title" = 'URGENT'/,/employee_id IN/) do
-          @e2.group.reports(true).with_urgent_title.with_urgent_body.inspect
+        assert_sql(select_from_reports, where_for_groups, where_for_urgent_body, where_for_urgent_title) do
+          @e2.group.reports.with_urgent_title.with_urgent_body.inspect
         end
       end
       
@@ -122,6 +121,25 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
       end
     end
     
+  end
+  
+  
+  protected
+  
+  def select_from_reports
+    /SELECT \* FROM "?reports"?/
+  end
+  
+  def where_for_groups
+    /WHERE.*"?reports"?.employee_id IN \(2,3\)/
+  end
+  
+  def where_for_urgent_body
+    /WHERE.*body LIKE '%URGENT%'/
+  end
+  
+  def where_for_urgent_title
+    /WHERE.*"?reports"?."?title"? = 'URGENT'/
   end
   
   

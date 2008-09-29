@@ -26,8 +26,8 @@ require 'active_record'
 require 'active_support'
 
 unless defined? ActiveRecord::NamedScope
+  require 'core_ext'
   require 'named_scope'
-  require 'named_scope_patch'
+  require ActiveRecord::Base.respond_to?(:find_first) ? 'named_scope_patch_1.2.6' : 'named_scope_patch_2.0'
   ActiveRecord::Base.send :include, GroupedScope::NamedScope
 end
-

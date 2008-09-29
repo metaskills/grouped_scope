@@ -5,7 +5,7 @@ GroupedScope aims to make two things easier in your ActiveRecord models. First, 
 easy way to group objects, second, to allow the group to share associated object via existing 
 has_many relationships. See installation and usage for more details.
 
-By the way, this plugin has been tested with rails 1.2.6 and 2.1.1.
+By the way, this plugin has been tested with rails 1.2.6, 2.0.4, and 2.1.1.
 
 
 === Installation & Usage
