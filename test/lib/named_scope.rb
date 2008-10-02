@@ -1,4 +1,4 @@
-module GroupedScope
+module ActiveRecord
   module NamedScope
     # All subclasses of ActiveRecord::Base have two named_scopes:
     # * <tt>all</tt>, which is similar to a <tt>find(:all)</tt> query, and

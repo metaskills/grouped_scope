@@ -33,6 +33,12 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
       assert_raise(GroupedScope::NoGroupIdError) { GroupedScope::SelfGroupping.new(FooBar.new) }
     end
     
+    should 'return correct attribute_condition for GroupedScope::SelfGroupping object' do
+      assert_sql(/"?group_id"? IN \(#{@employee.id}\)/) do
+        Employee.find :all, :conditions => {:group_id => @employee.group}
+      end
+    end
+    
     context 'for Array delegates' do
 
       should 'respond to first/last' do

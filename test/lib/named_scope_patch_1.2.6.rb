@@ -6,6 +6,19 @@ ActiveRecord::Associations::AssociationProxy.class_eval do
   end
 end
 
+class ActiveRecord::Base
+  class << self
+    private
+    def attribute_condition_with_named_scope(argument)
+      case argument
+        when ActiveRecord::Associations::AssociationCollection, ActiveRecord::NamedScope::Scope then "IN (?)"
+        else attribute_condition_without_named_scope(argument)
+      end
+    end
+    alias_method_chain :attribute_condition, :named_scope
+  end
+end
+
 ActiveRecord::Associations::HasManyAssociation.class_eval do
   protected
   def method_missing(method, *args, &block)
