@@ -9,7 +9,7 @@ require 'grouped_scope/core_ext'
 
 module GroupedScope
   
-  VERSION = '0.3'
+  VERSION = '0.4'
     
 end
 

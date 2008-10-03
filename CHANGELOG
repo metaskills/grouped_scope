@@ -1,4 +1,9 @@
 
+*0.4* (October 3rd 2008)
+
+* Use the #737f2bdabb of NamedScope plugin from http://github.com/metaskills/named_scope/tree/master
+
+
 *0.3* (October 2nd 2008)
 
 * Add additional NamedScope patches for attribute_condition. 
