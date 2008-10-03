@@ -28,11 +28,5 @@ require 'active_support'
 gem 'mislav-will_paginate', '2.3.4'
 require 'will_paginate'
 WillPaginate.enable_activerecord
-
-unless defined? ActiveRecord::NamedScope
-  require 'core_ext'
-  require 'named_scope'
-  require ActiveRecord::Base.respond_to?(:find_first) ? 'named_scope_patch_1.2.6' : 'named_scope_patch_2.0'
-  ActiveRecord::Base.send :include, ActiveRecord::NamedScope
-end
+require 'named_scope'
 

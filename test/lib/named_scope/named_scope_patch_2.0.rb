@@ -8,6 +8,17 @@ end
 
 class ActiveRecord::Base
   class << self
+    def find(*args)
+      options = args.extract_options!
+      validate_find_options(options)
+      set_readonly_option!(options)
+      case args.first
+        when :first then find_initial(options)
+        when :last  then find_last(options)
+        when :all   then find_every(options)
+        else             find_from_ids(args, options)
+      end
+    end
     private
     def attribute_condition_with_named_scope(argument)
       case argument

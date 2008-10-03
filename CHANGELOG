@@ -1,3 +1,10 @@
+
+*0.3* (October 2nd 2008)
+
+* Add additional NamedScope patches for attribute_condition. 
+  Also added GroupedScope::CoreExt to follow suite for GroupedScope::SelfGrouping attribute_conditions.
+
+
 *0.2* (September 29th 2008)
 
 * Add WillPaginate test and confirm grouped scope, named scope, and will paginate all play together.  [Ken Collins]
