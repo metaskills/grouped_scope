@@ -43,5 +43,3 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--main", "README.rdoc"]
   s.extra_rdoc_files = ["README.rdoc","CHANGELOG","MIT-LICENSE"]
 end
-
-
