@@ -1,4 +1,9 @@
 
+* master
+
+* Add rails 2.2.2 to test task and remove quite backtrace usage so 1.2.6 testing can run. [Ken Collins]
+
+
 *0.4* (October 3rd 2008)
 
 * Use the #737f2bdabb of NamedScope plugin from http://github.com/metaskills/named_scope/tree/master

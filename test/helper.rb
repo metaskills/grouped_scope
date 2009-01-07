@@ -1,7 +1,6 @@
 require File.join(File.dirname(__FILE__),'lib/boot') unless defined?(ActiveRecord)
 require 'test/unit'
 require 'shoulda'
-require 'quietbacktrace'
 require 'mocha'
 require 'factory_girl'
 require 'lib/test_case'

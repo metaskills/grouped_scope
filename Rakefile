@@ -23,7 +23,7 @@ end
 desc 'Test the GroupedScope plugin with Rails 2.1.1, 2.0.4 & 1.2.6 gems'
 task :test_rails do
   test = Rake::Task['test']
-  versions = ['2.1.1','2.0.4','1.2.6']
+  versions = ['2.2.2','2.1.1','2.0.4','1.2.6']
   versions.each do |version|
     ENV['RAILS_VERSION'] = "#{version}"
     test.invoke
