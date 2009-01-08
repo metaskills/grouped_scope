@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = "grouped_scope"
-  s.version  = "0.5.0"
+  s.version  = "0.5.1"
   s.date     = "2009-01-07"
   s.summary  = "Extends has_many associations to group scope."
   s.email    = "ken@metaskills.net"
@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
     "lib/grouped_scope/has_many_association.rb",
     "lib/grouped_scope/has_many_through_association.rb",
     "lib/grouped_scope/instance_methods.rb",
-    "lib/grouped_scope/self_grouping.rb"]
+    "lib/grouped_scope/self_grouping.rb" ]
   s.test_files = [
     "test/factories.rb",
     "test/grouped_scope/association_reflection_test.rb",

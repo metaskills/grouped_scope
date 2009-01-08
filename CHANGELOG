@@ -4,7 +4,7 @@
 * 
 
 
-*0.5.0* (January 7th 2009)
+*0.5.1* (January 7th 2009)
 
 * Add rails 2.2.2 to test task and remove quite backtrace usage so 1.2.6 testing can run. [Ken Collins]
 
