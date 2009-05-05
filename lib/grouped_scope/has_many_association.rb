@@ -9,8 +9,6 @@ module GroupedScope
     
     def construct_sql_with_group_scope
       if @reflection.options[:grouped_scope]
-        # CHANGED [Rails 1.2.6] Account for quoted_table_name.
-        table_name = @reflection.respond_to?(:quoted_table_name) ? @reflection.quoted_table_name : @reflection.klass.table_name
         if @reflection.options[:as]
           # TODO: Need to add case for polymorphic :as option.
         else

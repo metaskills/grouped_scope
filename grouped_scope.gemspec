@@ -33,12 +33,6 @@ Gem::Specification.new do |s|
     "test/grouped_scope/self_grouping_test.rb",
     "test/helper.rb",
     "test/lib/boot.rb",
-    "test/lib/core_ext.rb",
-    "test/lib/named_scope.rb",
-    "test/lib/named_scope/core_ext.rb",
-    "test/lib/named_scope/named_scope.rb",
-    "test/lib/named_scope/named_scope_patch_1.2.rb",
-    "test/lib/named_scope/named_scope_patch_2.0.rb",
     "test/lib/test_case.rb" ]
   s.rdoc_options = ["--main", "README.rdoc"]
   s.extra_rdoc_files = ["README.rdoc","CHANGELOG","MIT-LICENSE"]

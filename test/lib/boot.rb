@@ -28,5 +28,4 @@ require 'active_support'
 gem 'mislav-will_paginate', '2.3.4'
 require 'will_paginate'
 WillPaginate.enable_activerecord
-require 'named_scope'
 
