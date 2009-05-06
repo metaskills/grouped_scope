@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name     = "grouped_scope"
-  s.version  = "0.5.1"
-  s.date     = "2009-01-07"
+  s.version  = "0.6.0"
+  s.date     = "2009-05-06"
   s.summary  = "Extends has_many associations to group scope."
   s.email    = "ken@metaskills.net"
   s.homepage = "http://github.com/metaskills/grouped_scope/"
