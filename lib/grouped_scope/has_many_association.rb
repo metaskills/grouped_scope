@@ -12,7 +12,7 @@ module GroupedScope
         if @reflection.options[:as]
           # TODO: Need to add case for polymorphic :as option.
         else
-          @finder_sql = "#{table_name}.#{@reflection.primary_key_name} IN (#{@owner.group.quoted_ids})"
+          @finder_sql = "#{@reflection.quoted_table_name}.#{@reflection.primary_key_name} IN (#{@owner.group.quoted_ids})"
           @finder_sql << " AND (#{conditions})" if conditions
         end
         @counter_sql = @finder_sql
