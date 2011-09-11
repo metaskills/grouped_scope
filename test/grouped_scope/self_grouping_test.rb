@@ -1,15 +1,15 @@
-require File.dirname(__FILE__) + '/../helper'
+require 'helper'
 
 class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
   
-  def setup
+  setup do
     setup_environment
   end
   
   context 'General behavior' do
     
     setup do
-      @employee = Factory(:employee)
+      @employee = FactoryGirl.create(:employee)
     end
     
     should 'return an array' do
@@ -29,8 +29,8 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
     end
     
     should 'raise a GroupedScope::NoGroupIdError exception for objects with no group_id schema' do
-      assert_does_not_contain FooBar.column_names, 'group_id'
-      assert_raise(GroupedScope::NoGroupIdError) { GroupedScope::SelfGroupping.new(FooBar.new) }
+      FooBar.column_names.wont_include 'group_id'
+      lambda{ GroupedScope::SelfGroupping.new(FooBar.new) }.must_raise(GroupedScope::NoGroupIdError)
     end
     
     should 'return correct attribute_condition for GroupedScope::SelfGroupping object' do
@@ -61,13 +61,13 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
   context 'Calling #group' do
     
     should 'return an array' do
-      assert_instance_of Array, Factory(:employee).group
+      assert_instance_of Array, FactoryGirl.create(:employee).group
     end
     
     context 'with a NIL group_id' do
       
       setup do
-        @employee = Factory(:employee)
+        @employee = FactoryGirl.create(:employee)
       end
       
       should 'return a collection of one' do
@@ -75,7 +75,7 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
       end
       
       should 'include self in group' do
-        assert_contains @employee.group, @employee
+        assert @employee.group.include?(@employee)
       end
       
     end
@@ -83,7 +83,7 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
     context 'with a set group_id' do
       
       setup do
-        @employee = Factory(:employee, :group_id => 1)
+        @employee = FactoryGirl.create(:employee, :group_id => 1)
       end
       
       should 'return a collection of one' do
@@ -91,7 +91,7 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
       end
       
       should 'include self in group' do
-        assert_contains @employee.group, @employee
+        assert @employee.group.include?(@employee)
       end
       
     end
@@ -99,10 +99,10 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
     context 'with different groups available' do
       
       setup do
-        @e1 = Factory(:employee_with_reports, :group_id => 1)
-        @e2 = Factory(:employee, :group_id => 1)
-        @e3 = Factory(:employee_with_reports, :group_id => 2)
-        @e4 = Factory(:employee, :group_id => 2)
+        @e1 = FactoryGirl.create(:employee_with_reports, :group_id => 1)
+        @e2 = FactoryGirl.create(:employee, :group_id => 1)
+        @e3 = FactoryGirl.create(:employee_with_reports, :group_id => 2)
+        @e4 = FactoryGirl.create(:employee, :group_id => 2)
       end
       
       should 'return a collection of group members' do
@@ -128,10 +128,10 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
     context 'with different groups in legacy schema' do
       
       setup do
-        @e1 = Factory(:legacy_employee_with_reports, :group_id => 1)
-        @e2 = Factory(:legacy_employee, :group_id => 1)
-        @e3 = Factory(:legacy_employee_with_reports, :group_id => 2)
-        @e4 = Factory(:legacy_employee, :group_id => 2)
+        @e1 = FactoryGirl.create(:legacy_employee_with_reports, :group_id => 1)
+        @e2 = FactoryGirl.create(:legacy_employee, :group_id => 1)
+        @e3 = FactoryGirl.create(:legacy_employee_with_reports, :group_id => 2)
+        @e4 = FactoryGirl.create(:legacy_employee, :group_id => 2)
       end
       
       should 'honor legacy reports association options like class_name and foreign_key' do
@@ -139,7 +139,6 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
       end
       
     end
-    
     
   end
   

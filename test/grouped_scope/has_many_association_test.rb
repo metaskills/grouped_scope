@@ -1,16 +1,15 @@
-require File.dirname(__FILE__) + '/../helper'
+require 'helper'
 
 class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
   
-  def setup
+  setup do
     setup_environment
   end
-  
   
   context 'For an Employee' do
     
     setup do 
-      @employee = Factory(:employee)
+      @employee = FactoryGirl.create(:employee)
     end
     
     should 'scope existing association to owner' do
@@ -28,8 +27,8 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
     context 'for counting sql' do
       
       setup do
-        @e1 = Factory(:employee_with_reports, :group_id => 1)
-        @e2 = Factory(:employee_with_reports, :group_id => 1)
+        @e1 = FactoryGirl.create(:employee_with_reports, :group_id => 1)
+        @e2 = FactoryGirl.create(:employee_with_reports, :group_id => 1)
       end
       
       should 'scope count sql to owner' do
@@ -53,8 +52,8 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
     context 'training association extensions' do
     
       setup do
-        @e1 = Factory(:employee_with_urgent_reports, :group_id => 1)
-        @e2 = Factory(:employee, :group_id => 1)
+        @e1 = FactoryGirl.create(:employee_with_urgent_reports, :group_id => 1)
+        @e2 = FactoryGirl.create(:employee, :group_id => 1)
         @urgent_reports = @e1.reports.select(&:urgent_title?)
       end
       
@@ -77,8 +76,8 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
     context 'training named scopes' do
       
       setup do
-        @e1 = Factory(:employee_with_urgent_reports, :group_id => 1)
-        @e2 = Factory(:employee, :group_id => 1)
+        @e1 = FactoryGirl.create(:employee_with_urgent_reports, :group_id => 1)
+        @e2 = FactoryGirl.create(:employee, :group_id => 1)
         @urgent_titles = @e1.reports.select(&:urgent_title?)
         @urgent_bodys = @e1.reports.select(&:urgent_body?)
       end
@@ -117,7 +116,7 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
   context 'For a LegacyEmployee' do
   
     setup do
-      @employee = Factory(:legacy_employee)
+      @employee = FactoryGirl.create(:legacy_employee)
     end
   
     should 'scope existing association to owner' do

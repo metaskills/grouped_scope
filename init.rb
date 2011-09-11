@@ -1,2 +1,0 @@
-require 'grouped_scope'
-

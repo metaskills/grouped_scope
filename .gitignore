@@ -1,4 +1,6 @@
 .DS_Store
-test/debug.log
+debug.log
 autotest
 .rbenv-version
+Gemfile.lock
+debug.log

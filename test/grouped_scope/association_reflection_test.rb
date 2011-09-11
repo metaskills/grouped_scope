@@ -1,8 +1,8 @@
-require File.dirname(__FILE__) + '/../helper'
+require 'helper'
 
 class GroupedScope::AssociationReflectionTest < GroupedScope::TestCase
   
-  def setup
+  setup do
     setup_environment
   end
   
@@ -13,18 +13,17 @@ class GroupedScope::AssociationReflectionTest < GroupedScope::TestCase
       setup { @reflection_klass = GroupedScope::AssociationReflection }
 
       should 'when a association does not exist' do
-        assert_raise(ArgumentError) { @reflection_klass.new(Employee,:foobars) }
+        lambda{ @reflection_klass.new(Employee,:doesnotexist) }.must_raise(ArgumentError)
       end
 
       should 'when the association is not a has_many or a has_and_belongs_to_many' do
         Employee.class_eval { belongs_to(:foo) }
-        assert_raise(ArgumentError) { @reflection_klass.new(Employee,:foo) }
+        lambda{ @reflection_klass.new(Employee,:foo) }.must_raise(ArgumentError)
       end
 
     end
 
   end
-  
   
   context 'For #ungrouped_reflection' do
     
@@ -47,8 +46,8 @@ class GroupedScope::AssociationReflectionTest < GroupedScope::TestCase
     end
     
     should 'not delegate to #ungrouped_reflection for #options and #name' do
-      assert_not_equal @ungrouped_reflection.name, @grouped_reflection.name
-      assert_not_equal @ungrouped_reflection.options, @grouped_reflection.options
+      @ungrouped_reflection.name.wont_equal @grouped_reflection.name
+      @ungrouped_reflection.options.wont_equal @grouped_reflection.options
     end
     
     should 'derive class name to same as ungrouped reflection' do
@@ -69,7 +68,6 @@ class GroupedScope::AssociationReflectionTest < GroupedScope::TestCase
     end
     
   end
-  
   
   
 end

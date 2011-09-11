@@ -1,16 +1,15 @@
-require File.dirname(__FILE__) + '/../helper'
+require 'helper'
 
 class GroupedScope::HasManyThroughAssociationTest < GroupedScope::TestCase
   
-  def setup
+  setup do
     setup_environment
-    @e1 = Factory(:employee, :group_id => 1)
+    @e1 = FactoryGirl.create(:employee, :group_id => 1)
     @e1.departments << Department.hr << Department.finance
-    @e2 = Factory(:employee, :group_id => 1)
+    @e2 = FactoryGirl.create(:employee, :group_id => 1)
     @e2.departments << Department.it
     @all_group_departments = [Department.hr, Department.it, Department.finance]
   end
-  
   
   context 'For default association' do
 
@@ -47,7 +46,6 @@ class GroupedScope::HasManyThroughAssociationTest < GroupedScope::TestCase
     end
     
   end
-  
   
   
 end

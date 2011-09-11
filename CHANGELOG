@@ -1,33 +1,42 @@
 
-*master*
+= master
 
-* 
+= 0.6.0 (May 06, 2009)
+
+* ActiveRecord 2.3.14 compatibility.
+
+* Refactored to use MiniTest::Spec and Bundler for development/testing.
 
 
-*0.5.1* (January 7th 2009)
+= 0.6.0 (May 06, 2009)
+
+* ActiveRecord 2.3.2 compatibility.
+
+
+= 0.5.1 (January 7th 2009)
 
 * Add rails 2.2.2 to test task and remove quite backtrace usage so 1.2.6 testing can run. [Ken Collins]
 
 
-*0.4* (October 3rd 2008)
+= 0.4 (October 3rd 2008)
 
 * Use the #737f2bdabb of NamedScope plugin from http://github.com/metaskills/named_scope/tree/master
 
 
-*0.3* (October 2nd 2008)
+= 0.3 (October 2nd 2008)
 
 * Add additional NamedScope patches for attribute_condition. 
   Also added GroupedScope::CoreExt to follow suite for GroupedScope::SelfGrouping attribute_conditions.
 
 
-*0.2* (September 29th 2008)
+= 0.2 (September 29th 2008)
 
 * Add WillPaginate test and confirm grouped scope, named scope, and will paginate all play together.  [Ken Collins]
 
 * Stronger back port for named_scope in 1.2.6 and 2.0.4. Fixed bug where association proxy owner scope was after named_scope calls.  [Ken Collins]
 
 
-*0.1* (September 26th, 2008)
+= 0.1 (September 26th, 2008)
 
 * Initial public release.  [Ken Collins]
 

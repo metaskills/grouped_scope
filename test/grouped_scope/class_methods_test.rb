@@ -1,8 +1,8 @@
-require File.dirname(__FILE__) + '/../helper'
+require 'helper'
 
 class GroupedScope::ClassMethodsTest < GroupedScope::TestCase
   
-  def setup
+  setup do
     setup_environment
   end
   
@@ -34,7 +34,7 @@ class GroupedScope::ClassMethodsTest < GroupedScope::TestCase
     should 'create a has_many assoc named :grouped_scope_* using existing association as a suffix' do
       grouped_reports_assoc = Employee.reflections[:grouped_scope_reports]
       assert_instance_of GroupedScope::AssociationReflection, grouped_reports_assoc
-      assert Factory(:employee).respond_to?(:grouped_scope_reports)
+      assert FactoryGirl.create(:employee).respond_to?(:grouped_scope_reports)
     end
     
     should 'not add the :grouped_scope option to existing reflection' do
