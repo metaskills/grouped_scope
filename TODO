@@ -1,0 +1,5 @@
+
+* Use appraisal for rails dep testing.
+  https://github.com/thoughtbot/appraisal
+
+* Redo for rails 3.1 tests.
