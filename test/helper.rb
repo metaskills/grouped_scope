@@ -3,7 +3,6 @@ require 'bundler'
 require "bundler/setup"
 Bundler.require(:default, :development, :test)
 require 'grouped_scope'
-require 'mini_shoulda'
 require 'minitest/autorun'
 require 'factories'
 
@@ -24,6 +23,11 @@ end
 
 module GroupedScope
   class TestCase < MiniTest::Spec
+    
+    include Mocha::API
+    
+    before { setup_environment }
+    after  { mocha_teardown }
     
     def setup_environment(options={})
       options.reverse_merge! :group_column => :group_id

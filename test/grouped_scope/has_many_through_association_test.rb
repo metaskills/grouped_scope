@@ -2,8 +2,7 @@ require 'helper'
 
 class GroupedScope::HasManyThroughAssociationTest < GroupedScope::TestCase
   
-  setup do
-    setup_environment
+  before do
     @e1 = FactoryGirl.create(:employee, :group_id => 1)
     @e1.departments << Department.hr << Department.finance
     @e2 = FactoryGirl.create(:employee, :group_id => 1)
@@ -11,15 +10,15 @@ class GroupedScope::HasManyThroughAssociationTest < GroupedScope::TestCase
     @all_group_departments = [Department.hr, Department.it, Department.finance]
   end
   
-  context 'For default association' do
+  describe 'For default association' do
 
-    should 'scope to owner' do
+    it 'scope to owner' do
       assert_sql(/employee_id = #{@e1.id}/) do
         @e1.departments(true)
       end
     end
     
-    should 'scope count to owner' do
+    it 'scope count to owner' do
       assert_sql(/employee_id = #{@e1.id}/) do
         @e1.departments(true).count
       end
@@ -27,21 +26,21 @@ class GroupedScope::HasManyThroughAssociationTest < GroupedScope::TestCase
     
   end
   
-  context 'For grouped association' do
+  describe 'For grouped association' do
 
-    should 'scope to group' do
+    it 'scope to group' do
       assert_sql(/employee_id IN \(#{@e1.id},#{@e2.id}\)/) do
         @e2.group.departments(true)
       end
     end
     
-    should 'scope count to group' do
+    it 'scope count to group' do
       assert_sql(/employee_id IN \(#{@e1.id},#{@e2.id}\)/) do
         @e1.group.departments(true).count
       end
     end
     
-    should 'have a group count equal to sum of seperate owner counts' do
+    it 'have a group count equal to sum of seperate owner counts' do
       assert_equal @e1.departments(true).count + @e2.departments(true).count, @e2.group.departments(true).count
     end
     
