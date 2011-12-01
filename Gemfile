@@ -7,10 +7,9 @@ ar_version = spec.dependencies.detect{ |d|d.name == 'activerecord' }.requirement
 
 gem 'sqlite3', '1.3.4'
 gem 'activerecord', ar_version, :require => 'active_record'
-gem 'will_paginate', '2.3.16'
 
 group :development do
-  gem 'rake', '0.8.7'
+  gem 'rake', '~> 0.9.2'
 end
 
 group :test do

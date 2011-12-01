@@ -94,17 +94,6 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
         end
       end
       
-      describe 'with will paginate' do
-        
-        it 'use group reflection, named scope, and paginate SQL' do
-          where_ends_with_limits = /WHERE.*LIMIT 2 OFFSET 0/
-          assert_sql(select_from_reports, where_for_groups, where_for_urgent_body, where_for_urgent_title, where_ends_with_limits) do
-            @e2.group.reports.with_urgent_title.with_urgent_body.paginate(:page=>1,:per_page=>2)
-          end
-        end
-        
-      end
-      
     end
     
   end

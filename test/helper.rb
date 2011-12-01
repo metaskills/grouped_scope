@@ -6,8 +6,6 @@ require 'grouped_scope'
 require 'minitest/autorun'
 require 'factories'
 
-WillPaginate.enable_activerecord
-
 ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__)+'/debug.log')
 ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database => ':memory:'
 ActiveRecord::Base.connection.class.class_eval do
