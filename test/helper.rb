@@ -5,17 +5,27 @@ Bundler.require(:default, :development, :test)
 require 'grouped_scope'
 require 'minitest/autorun'
 require 'factories'
+require 'logger'
 
-ActiveRecord::Base.logger = Logger.new(File.dirname(__FILE__)+'/debug.log')
+
+ActiveRecord::Base.logger = Logger.new(File.join(File.dirname(__FILE__),'debug.log'))
 ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database => ':memory:'
-ActiveRecord::Base.connection.class.class_eval do
-  IGNORED_SQL = [/^PRAGMA/, /^SELECT currval/, /^SELECT CAST/, /^SELECT @@IDENTITY/, /^SELECT @@ROWCOUNT/]
-  def execute_with_query_record(sql, name = nil, &block)
-    $queries_executed ||= []
-    $queries_executed << sql unless IGNORED_SQL.any? { |r| sql =~ r }
-    execute_without_query_record(sql, name, &block)
+module ActiveRecord
+  class SQLCounter
+    cattr_accessor :ignored_sql
+    self.ignored_sql = [/^PRAGMA (?!(table_info))/, /^SELECT currval/, /^SELECT CAST/, /^SELECT @@IDENTITY/, /^SELECT @@ROWCOUNT/, /^SAVEPOINT/, /^ROLLBACK TO SAVEPOINT/, /^RELEASE SAVEPOINT/, /^SHOW max_identifier_length/, /^BEGIN/, /^COMMIT/]
+    ignored_sql.concat [/^select .*nextval/i, /^SAVEPOINT/, /^ROLLBACK TO/, /^\s*select .* from all_triggers/im]
+    def initialize
+      $queries_executed = []
+    end
+    def call(name, start, finish, message_id, values)
+      sql = values[:sql]
+      unless 'CACHE' == values[:name]
+        $queries_executed << sql unless self.class.ignored_sql.any? { |r| sql =~ r }
+      end
+    end
   end
-  alias_method_chain :execute, :query_record
+  ActiveSupport::Notifications.subscribe('sql.active_record', SQLCounter.new)
 end
 
 
@@ -49,19 +59,20 @@ module GroupedScope
     def assert_sql(*patterns_to_match)
       $queries_executed = []
       yield
+      $queries_executed
     ensure
       failed_patterns = []
       patterns_to_match.each do |pattern|
         failed_patterns << pattern unless $queries_executed.any?{ |sql| pattern === sql }
       end
-      assert failed_patterns.empty?, "Query pattern(s) #{failed_patterns.map(&:inspect).join(', ')} not found in:\n#{$queries_executed.inspect}"
+      assert failed_patterns.empty?, "Query pattern(s) #{failed_patterns.map{ |p| p.inspect }.join(', ')} not found.#{$queries_executed.size == 0 ? '' : "\nQueries:\n#{$queries_executed.join("\n")}"}"
     end
 
     def assert_queries(num = 1)
       $queries_executed = []
       yield
     ensure
-      assert_equal num, $queries_executed.size, "#{$queries_executed.size} instead of #{num} queries were executed."
+      assert_equal num, $queries_executed.size, "#{$queries_executed.size} instead of #{num} queries were executed.#{$queries_executed.size == 0 ? '' : "\nQueries:\n#{$queries_executed.join("\n")}"}"
     end
 
     def assert_no_queries(&block)
@@ -110,6 +121,7 @@ module GroupedScope
   end
 end
 
+
 class Employee < ActiveRecord::Base
   has_many :reports do ; def urgent ; find(:all,:conditions => {:title => 'URGENT'}) ; end ; end
   has_many :taxonomies, :as => :classable
@@ -119,17 +131,17 @@ class Employee < ActiveRecord::Base
 end
 
 class Report < ActiveRecord::Base
-  named_scope :with_urgent_title, :conditions => {:title => 'URGENT'}
-  named_scope :with_urgent_body, :conditions => "body LIKE '%URGENT%'"
+  scope :with_urgent_title, where(:title => 'URGENT')
+  scope :with_urgent_body, where("body LIKE '%URGENT%'")
   belongs_to :employee
   def urgent_title? ; self[:title] == 'URGENT' ; end
   def urgent_body? ; self[:body] =~ /URGENT/ ; end
 end
 
 class Department < ActiveRecord::Base
-  named_scope :it, :conditions => {:name => 'IT'}
-  named_scope :hr, :conditions => {:name => 'Human Resources'}
-  named_scope :finance, :conditions => {:name => 'Finance'}
+  scope :it, where(:name => 'IT')
+  scope :hr, where(:name => 'Human Resources')
+  scope :finance, where(:name => 'Finance')
   has_many :department_memberships
   has_many :employees, :through => :department_memberships
 end
@@ -143,7 +155,6 @@ class LegacyEmployee < ActiveRecord::Base
   set_primary_key :email
   has_many :reports, :class_name => 'LegacyReport', :foreign_key => 'email'
   grouped_scope :reports
-  alias_method :email=, :id=
 end
 
 class LegacyReport < ActiveRecord::Base

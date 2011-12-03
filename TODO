@@ -1,4 +1,63 @@
 
+* Rails 3.1 Implementation
+  
+  /Users/kencollins/Repositories/rails/activerecord/lib/active_record/reflection.rb                                   - [24, 159, 331]
+  /Users/kencollins/Repositories/rails/activerecord/lib/active_record/associations.rb                                 - [154, 1171]
+  /Users/kencollins/Repositories/rails/activerecord/lib/active_record/associations/builder/association.rb             - []
+  /Users/kencollins/Repositories/rails/activerecord/lib/active_record/associations/builder/collection_association.rb  - []
+  /Users/kencollins/Repositories/rails/activerecord/lib/active_record/associations/builder/has_many.rb                - 
+  /Users/kencollins/Repositories/rails/activerecord/lib/active_record/associations/has_many_association.rb            - 
+  /Users/kencollins/Repositories/rails/activerecord/lib/active_record/associations/collection_association.rb          - [370]
+  /Users/kencollins/Repositories/rails/activerecord/lib/active_record/associations/association.rb                     - [97]
+  /Users/kencollins/Repositories/rails/activerecord/lib/active_record/associations/association_scope.rb               - [48]
+  
+  Notes:
+  
+  equalities = wheres.grep(Arel::Nodes::Equality)
+  
+  >> ActiveRecord::Associations::AssociationScope.new(User.first.association(:columns)).scope.where_values
+    User Load (0.5ms)  SELECT "users".* FROM "users" LIMIT 1
+  => [#<Arel::Nodes::Equality:0x007ffa41eb9c70 @left=#<struct Arel::Attributes::Attribute relation=#<Arel::Table:0x007ffa41eb9f40 @name="columns", @engine=ActiveRecord::Base, @columns=nil, @aliases=[], @table_alias=nil, @primary_key=nil>, name="user_id">, @right=8>]
+  
+  >> ActiveRecord::Associations::AssociationScope.new(User.first.association(:columns)).send(:construct_tables)
+    User Load (0.4ms)  SELECT "users".* FROM "users" LIMIT 1
+  => [#<Arel::Table:0x007ffa41fccbf8 @name="columns", @engine=ActiveRecord::Base, @columns=nil, @aliases=[], @table_alias=nil, @primary_key=nil>]
+  
+  >> ActiveRecord::Associations::AssociationScope.new(User.first.association(:columns))
+    User Load (0.4ms)  SELECT "users".* FROM "users" LIMIT 1
+    Column Load (0.7ms)  SELECT "columns".* FROM "columns" WHERE "columns"."user_id" = 8 ORDER BY position
+  => #<ActiveRecord::Associations::AssociationScope:0x007ffa458fe9d0 @association=#<ActiveRecord::Associations::HasManyAssociation:0x007ffa458fea70 @target=[], @reflection=#<ActiveRecord::Reflection::AssociationReflection:0x007ffa46855820 @macro=:has_many, @name=:columns, @options={:order=>"position", :extend=>[]}, @active_record=User(14 columns), @plural_name="columns", @collection=true, @class_name="Column", @klass=Column(3 columns), @foreign_key="user_id", @active_record_primary_key="id", @type=nil, @table_name="columns", @association_foreign_key="column_id">, @owner=#<User id: 8, email: "mark.imbriaco@pobox.com", verified: true, security_token: "1b8ed73c7e8600a82bd8824d2a5b243063665b9a", token_expiry: "2010-02-07 20:44:20", created_at: "2006-12-07 17:39:27", updated_at: "2011-09-24 16:28:41", logged_in_at: "2010-02-07 00:45:11", deleted: false, delete_after: nil, uuid: "b8281ad06871012903870016cba2a0b6", iphone_verified: false, tab_links: false, password_digest: "52eb36143a4c782e202a62d5b7d64f7ce4e6ec11">, @updated=false, @loaded=false, @association_scope=nil, @proxy=[#<Column id: 3635, user_id: 8, position: 1>, #<Column id: 10, user_id: 8, position: 2>], @stale_state=nil>, @alias_tracker=#<ActiveRecord::Associations::AliasTracker:0x007ffa458fe9a8 @aliases={}, @table_joins=[]>>
+  
+  >> User.first.columns.unscoped { Column.where(:position => 99) }
+    User Load (0.4ms)  SELECT "users".* FROM "users" LIMIT 1
+    Column Load (0.9ms)  SELECT "columns".* FROM "columns" WHERE "columns"."position" = 99
+  => []
+  
+  >> User.first.columns.unscoped { Column.where(:user_id => [1,2,3]) }
+    User Load (0.4ms)  SELECT "users".* FROM "users" LIMIT 1
+    Column Load (0.9ms)  SELECT "columns".* FROM "columns" WHERE "columns"."user_id" IN (1, 2, 3)
+  => [#<Column id: 1, user_id: 1, position: 5>, #<Column id: 2, user_id: 1, position: 1>, #<Column id: 8, user_id: 1, position: 6>, #<Column id: 9, user_id: 1, position: 4>, #<Column id: 809, user_id: 1, position: 2>, #<Column id: 3395, user_id: 1, position: 3>]
+  
+  >> User.reflections[:columns].association_class
+  => ActiveRecord::Associations::HasManyAssociation
+  
+  >> User.reflections[:columns].association_foreign_key
+  => "column_id"
+  
+  >> User.reflect_on_all_associations(:has_many).detect { |a| a.name == :columns }
+  => #<ActiveRecord::Reflection::AssociationReflection:0x007ffa46855820 @macro=:has_many, @name=:columns, @options={:order=>"position", :extend=>[]}, @active_record=User(14 columns), @plural_name="columns", @collection=true, @class_name="Column", @klass=Column(3 columns), @foreign_key="user_id", @active_record_primary_key="id", @type=nil, @table_name="columns", @association_foreign_key="column_id">
+
+  >> User.reflections[:columns]
+  => #<ActiveRecord::Reflection::AssociationReflection:0x007ffa46855820 @macro=:has_many, @name=:columns, @options={:order=>"position", :extend=>[]}, @active_record=User(14 columns), @plural_name="columns", @collection=true, @class_name="Column", @klass=Column(3 columns), @foreign_key="user_id", @active_record_primary_key="id", @type=nil>
+  
+  >> User.reflect_on_association(:columns)
+  => #<ActiveRecord::Reflection::AssociationReflection:0x007ffa46855820 @macro=:has_many, @name=:columns, @options={:order=>"position", :extend=>[]}, @active_record=User(14 columns), @plural_name="columns", @collection=true, @class_name="Column", @klass=Column(3 columns), @foreign_key="user_id", @active_record_primary_key="id", @type=nil>
+  
+  >> User.first.association(:columns)
+  => #<ActiveRecord::Associations::HasManyAssociation:0x007ffa464a7480 @target=[], @reflection=#<ActiveRecord::Reflection::AssociationReflection:0x007ffa46855820 @macro=:has_many, @name=:columns, @options={:order=>"position", :extend=>[]}, @active_record=User(14 columns), @plural_name="columns", @collection=true, @class_name="Column", @klass=Column(3 columns), @foreign_key="user_id", @active_record_primary_key="id", @type=nil>, @owner=#<User id: 8, email: "mark.imbriaco@pobox.com", verified: true, security_token: "1b8ed73c7e8600a82bd8824d2a5b243063665b9a", token_expiry: "2010-02-07 20:44:20", created_at: "2006-12-07 17:39:27", updated_at: "2011-09-24 16:28:41", logged_in_at: "2010-02-07 00:45:11", deleted: false, delete_after: nil, uuid: "b8281ad06871012903870016cba2a0b6", iphone_verified: false, tab_links: false, password_digest: "52eb36143a4c782e202a62d5b7d64f7ce4e6ec11">, @updated=false, @loaded=false, @association_scope=nil, @proxy=[#<Column id: 3635, user_id: 8, position: 1>, #<Column id: 10, user_id: 8, position: 2>], @stale_state=nil>
+
+
+
 * Use appraisal for rails dep testing.
   https://github.com/thoughtbot/appraisal
 
