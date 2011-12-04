@@ -13,7 +13,7 @@ ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database => ':me
 module ActiveRecord
   class SQLCounter
     cattr_accessor :ignored_sql
-    self.ignored_sql = [/^PRAGMA (?!(table_info))/, /^SELECT currval/, /^SELECT CAST/, /^SELECT @@IDENTITY/, /^SELECT @@ROWCOUNT/, /^SAVEPOINT/, /^ROLLBACK TO SAVEPOINT/, /^RELEASE SAVEPOINT/, /^SHOW max_identifier_length/, /^BEGIN/, /^COMMIT/]
+    self.ignored_sql = [/^PRAGMA table_info\(.*\)/, /^SELECT currval/, /^SELECT CAST/, /^SELECT @@IDENTITY/, /^SELECT @@ROWCOUNT/, /^SAVEPOINT/, /^ROLLBACK TO SAVEPOINT/, /^RELEASE SAVEPOINT/, /^SHOW max_identifier_length/, /^BEGIN/, /^COMMIT/]
     ignored_sql.concat [/^select .*nextval/i, /^SAVEPOINT/, /^ROLLBACK TO/, /^\s*select .* from all_triggers/im]
     def initialize
       $queries_executed = []
@@ -121,23 +121,6 @@ module GroupedScope
   end
 end
 
-
-class Employee < ActiveRecord::Base
-  has_many :reports do ; def urgent ; find(:all,:conditions => {:title => 'URGENT'}) ; end ; end
-  has_many :taxonomies, :as => :classable
-  has_many :department_memberships
-  has_many :departments, :through => :department_memberships
-  grouped_scope :reports, :departments
-end
-
-class Report < ActiveRecord::Base
-  scope :with_urgent_title, where(:title => 'URGENT')
-  scope :with_urgent_body, where("body LIKE '%URGENT%'")
-  belongs_to :employee
-  def urgent_title? ; self[:title] == 'URGENT' ; end
-  def urgent_body? ; self[:body] =~ /URGENT/ ; end
-end
-
 class Department < ActiveRecord::Base
   scope :it, where(:name => 'IT')
   scope :hr, where(:name => 'Human Resources')
@@ -151,14 +134,30 @@ class DepartmentMembership < ActiveRecord::Base
   belongs_to :department
 end
 
-class LegacyEmployee < ActiveRecord::Base
-  set_primary_key :email
-  has_many :reports, :class_name => 'LegacyReport', :foreign_key => 'email'
-  grouped_scope :reports
+class Report < ActiveRecord::Base
+  scope :with_urgent_title, where(:title => 'URGENT')
+  scope :with_urgent_body, where("body LIKE '%URGENT%'")
+  belongs_to :employee
+  def urgent_title? ; self[:title] == 'URGENT' ; end
+  def urgent_body? ; self[:body] =~ /URGENT/ ; end
 end
 
 class LegacyReport < ActiveRecord::Base
   belongs_to :employee, :class_name => 'LegacyEmployee', :foreign_key => 'email'
+end
+
+class Employee < ActiveRecord::Base
+  has_many :reports do ; def urgent ; find(:all,:conditions => {:title => 'URGENT'}) ; end ; end
+  has_many :taxonomies, :as => :classable
+  has_many :department_memberships
+  has_many :departments, :through => :department_memberships
+  grouped_scope :reports, :departments
+end
+
+class LegacyEmployee < ActiveRecord::Base
+  set_primary_key :email
+  has_many :reports, :class_name => 'LegacyReport', :foreign_key => 'email'
+  grouped_scope :reports
 end
 
 class FooBar < ActiveRecord::Base

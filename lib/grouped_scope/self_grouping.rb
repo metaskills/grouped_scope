@@ -26,7 +26,7 @@ module GroupedScope
     end
     
     def respond_to?(method, include_private=false)
-      super || !proxy_class.grouped_scopes[method].blank?
+      super || proxy_class.grouped_reflections[method].present?
     end
     
     
@@ -36,12 +36,12 @@ module GroupedScope
       @group_proxy ||= find_selves(group_scope_options)
     end
     
-    def all_grouped?
-      proxy_owner.all_grouped? rescue false
+    def grouped?
+      proxy_owner.group_id.present?
     end
     
-    def no_group?
-      proxy_owner.group_id.blank?
+    def all_grouped?
+      proxy_owner.all_grouped? rescue false
     end
     
     def find_selves(options={})
@@ -50,7 +50,7 @@ module GroupedScope
     
     def group_scope_options
       return {} if all_grouped?
-      conditions = no_group? ? { primary_key => proxy_owner.id } : { :group_id => proxy_owner.group_id }
+      conditions = grouped? ? { :group_id => proxy_owner.group_id } : { primary_key => proxy_owner.id }
       { :conditions => conditions }
     end
     
@@ -66,8 +66,8 @@ module GroupedScope
     private
     
     def method_missing(method, *args, &block)
-      if proxy_class.grouped_scopes[method]
-        proxy_owner.send("grouped_scope_#{method}", *args, &block)
+      if proxy_class.grouped_reflections[method]
+        proxy_owner.send :"grouped_scope_#{method}", *args, &block
       else
         super
       end

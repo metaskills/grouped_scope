@@ -5,14 +5,14 @@ module GroupedScope
       extend ActiveSupport::Concern
 
       included do
-        class_attribute :grouped_scopes, :instance_reader => false, :instance_writer => false
-        self.grouped_scopes = {}
+        class_attribute :grouped_reflections, :instance_reader => false, :instance_writer => false
+        self.grouped_reflections = {}.freeze
       end
 
       module ClassMethods
 
         def grouped_scope(*association_names)
-          GroupedScope::Arish::Associations::Builder::GroupedScope.build(self, *association_names)
+          GroupedScope::Arish::Associations::Builder::GroupedCollectionAssociation.build(self, *association_names)
         end
 
       end

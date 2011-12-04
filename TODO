@@ -13,6 +13,21 @@
   
   Notes:
   
+  
+  >> User.reflections[:columns].primary_key_column
+  => #<ActiveRecord::ConnectionAdapters::PostgreSQLColumn:0x007fdcd859b868 @name="id", @sql_type="integer", @null=false, @limit=nil, @precision=nil, @scale=nil, @type=:integer, @default=nil, @primary=true, @coder=nil>
+  >> User.reflections[:columns].association_foreign_key
+  => "column_id"
+  >> User.reflections[:columns].association_primary_key
+  => "id"
+  >> User.reflections[:columns].active_record_primary_key
+  => "id"
+  >> User.reflections[:columns].active_record
+  => User(14 columns)
+  
+  
+  
+  
   equalities = wheres.grep(Arel::Nodes::Equality)
   
   >> ActiveRecord::Associations::AssociationScope.new(User.first.association(:columns)).scope.where_values
@@ -62,3 +77,10 @@
   https://github.com/thoughtbot/appraisal
 
 * Redo for rails 3.1 tests.
+
+* Kill &block stuff.
+
+
+
+
+

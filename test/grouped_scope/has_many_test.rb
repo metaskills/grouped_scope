@@ -1,6 +1,6 @@
 require 'helper'
 
-class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
+class GroupedScope::HasManyTest < GroupedScope::TestCase
   
   describe 'For an Employee' do
     
@@ -9,13 +9,13 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
     end
     
     it 'scope existing association to owner' do
-      assert_sql(/employee_id = #{@employee.id}/) do
+      assert_sql(/"employee_id" = #{@employee.id}/) do
         @employee.reports(true)
       end
     end
     
     it 'scope group association to group' do
-      assert_sql(/employee_id IN \(#{@employee.id}\)/) do
+      assert_sql(/"employee_id" IN \(#{@employee.id}\)/) do
         @employee.group.reports(true)
       end
     end
@@ -28,13 +28,13 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
       end
       
       it 'scope count sql to owner' do
-        assert_sql(/SELECT count\(\*\)/,/employee_id = #{@e1.id}/) do
+        assert_sql(/SELECT COUNT\(\*\)/,/"employee_id" = #{@e1.id}/) do
           @e1.reports(true).count
         end
       end
       
       it 'scope count sql to group' do
-        assert_sql(/SELECT count\(\*\)/,/employee_id IN \(#{@e1.id},#{@e2.id}\)/) do
+        assert_sql(/SELECT COUNT\(\*\)/,/"employee_id" IN \(#{@e1.id}, #{@e2.id}\)/) do
           @e1.group.reports(true).count
         end
       end
@@ -105,13 +105,13 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
     end
   
     it 'scope existing association to owner' do
-      assert_sql(/"?legacy_reports"?.email = '#{@employee.id}'/) do
+      assert_sql(/"legacy_reports"."email" = '#{@employee.id}'/) do
         @employee.reports(true)
       end
     end
     
     it 'scope group association to group' do
-      assert_sql(/"?legacy_reports"?.email IN \('#{@employee.id}'\)/) do
+      assert_sql(/"legacy_reports"."email" IN \('#{@employee.id}'\)/) do
         @employee.group.reports(true)
       end
     end
@@ -122,11 +122,11 @@ class GroupedScope::HasManyAssociationTest < GroupedScope::TestCase
   protected
   
   def select_from_reports
-    /SELECT \* FROM "?reports"?/
+    /SELECT "reports"\.\* FROM "reports"/
   end
   
   def where_for_groups
-    /WHERE.*"?reports"?.employee_id IN \(2,3\)/
+    /WHERE "reports"."employee_id" IN \(2, 3\)/
   end
   
   def where_for_urgent_body

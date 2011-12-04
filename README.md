@@ -82,7 +82,6 @@ defined on the original has_many. For instance:
 
 ## Todo List
 
-* Add more GroupedScope::Grouping code.
 * Add polymorphic support.
 * Add :through support.
 * Raise errors and/or support :finder_sql/:counter_sql.
