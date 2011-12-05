@@ -65,9 +65,13 @@ module GroupedScope
     
     private
     
-    def method_missing(method, *args, &block)
+    def method_missing(method, *args)
       if proxy_class.grouped_reflections[method]
-        proxy_owner.send :"grouped_scope_#{method}", *args, &block
+        if block_given?
+          proxy_owner.send(:"grouped_scope_#{method}", *args)  { |*block_args| yield(*block_args) }
+        else
+          proxy_owner.send(:"grouped_scope_#{method}", *args)
+        end
       else
         super
       end

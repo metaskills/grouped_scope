@@ -1,7 +1,5 @@
 
 * Rails 3.1 Implementation
-  
-  * Kill &block stuff.
 
   * Make association conditions use pure SQL. Avoid 100s of IDs.
   
