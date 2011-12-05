@@ -11,10 +11,10 @@ http://metaskills.net/2008/09/28/jack-has_many-things/
 
 ## Installation & Usage
 
-Install the gem with bundler.
+Install the gem with bundler. We follow a semantic versioning format that tracks ActiveRecord's minor version. So this means to use the latest 3.1.x version of GroupedScope with any ActiveRecord 3.1 version.
 
 ```ruby
-gem 'grouped_scope'
+gem 'grouped_scope', '~> 3.1.0'
 ```
 
 To use GroupedScope on a model it must have a `:group_id` column.
@@ -47,7 +47,7 @@ current object that called it.
 @employee_one.group   # => [#<Employee id: 1, group_id: nil>]
 ```
 
-To group resources, just assign the same `:group_id` in the schema.
+To group resources, just assign the same `:group_id` to each record in that group.
 
 ```ruby
 @employee_one.update_attribute :group_id, 1
@@ -72,7 +72,7 @@ on the group proxy. The collection will return resources shared by the group.
 ```
 
 You can even call scopes or association extensions defined on the objects in the collection
-defined on the original has_many. For instance:
+defined on the original association. For instance:
 
 ```ruby
 @employee.group.reports.urgent.assigned_to(user)
@@ -82,9 +82,10 @@ defined on the original has_many. For instance:
 
 ## Todo List
 
-* Make group association conditions use pure SQL. Avoid many ids.
+* Make group association conditions use pure SQL. Avoid many ids. Deprecate #quoted_ids.
 * Raise errors for :finder_sql/:counter_sql.
 * Add a user definable group_id schema.
+* Make SelfGrouping use targeted relation class for #primary_key.
 
 
 
