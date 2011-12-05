@@ -12,7 +12,7 @@ module GroupedScope
       module ClassMethods
 
         def grouped_scope(*association_names)
-          GroupedScope::Arish::Associations::Builder::GroupedCollectionAssociation.build(self, *association_names)
+          Associations::Builder::GroupedCollectionAssociation.build(self, *association_names)
         end
 
       end

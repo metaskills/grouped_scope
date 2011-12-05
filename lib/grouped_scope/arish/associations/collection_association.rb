@@ -9,7 +9,7 @@ module GroupedScope
           
           def association_scope
             if reflection.grouped_scope?
-              @association_scope ||= GroupedScope::Arish::Associations::AssociationScope.new(self).scope if klass
+              @association_scope ||= Associations::AssociationScope.new(self).scope if klass
             else
               super
             end
