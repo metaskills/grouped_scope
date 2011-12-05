@@ -82,9 +82,8 @@ defined on the original has_many. For instance:
 
 ## Todo List
 
-* Add polymorphic support.
-* Add :through support.
-* Raise errors and/or support :finder_sql/:counter_sql.
+* Make group association conditions use pure SQL. Avoid many ids.
+* Raise errors for :finder_sql/:counter_sql.
 * Add a user definable group_id schema.
 
 
