@@ -55,9 +55,7 @@ module GroupedScope
                 scope = scope.where(interpolate(condition))
               end
             else
-              # GroupedScope changed this line.
-              # constraint = table[key].eq(foreign_table[foreign_key])
-              constraint = table[key].in(owner.group.ids)
+              constraint = table[key].eq(foreign_table[foreign_key])
 
               if reflection.type
                 type = chain[i + 1].klass.base_class.name

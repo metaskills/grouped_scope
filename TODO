@@ -13,6 +13,21 @@
   
   Notes:
   
+  >> User.reflections[:boxes]
+  => #<ActiveRecord::Reflection::ThroughReflection:0x007faafdddd538 @macro=:has_many, @name=:boxes, @options={:through=>:columns, :readonly=>false, :order=>"columns.position, boxes.position", :extend=>[UserBoxesAssociationExtension]}, @active_record=User(14 columns), @plural_name="boxes", @collection=true>
+  >> User.reflections[:boxes].source_reflection
+  => #<ActiveRecord::Reflection::AssociationReflection:0x007faafdbf1d00 @macro=:has_many, @name=:boxes, @options={:order=>"position", :extend=>[]}, @active_record=Column(3 columns), @plural_name="boxes", @collection=true>
+  >> User.reflections[:boxes].through_reflection
+  => #<ActiveRecord::Reflection::AssociationReflection:0x007faafddf4df0 @macro=:has_many, @name=:columns, @options={:order=>"position", :extend=>[]}, @active_record=User(14 columns), @plural_name="columns", @collection=true, @class_name="Column", @klass=Column(3 columns)>
+  >> User.reflections[:boxes].source_reflection_names
+  => [:box, :boxes]
+  >> User.reflections[:boxes].source_options
+  => {:order=>"position", :extend=>[]}
+  >> User.reflections[:boxes].through_options
+  => {:order=>"position", :extend=>[]}
+  >> User.reflections[:boxes].class_name
+  => "Box"
+  
   
   >> User.reflections[:columns].primary_key_column
   => #<ActiveRecord::ConnectionAdapters::PostgreSQLColumn:0x007fdcd859b868 @name="id", @sql_type="integer", @null=false, @limit=nil, @precision=nil, @scale=nil, @type=:integer, @default=nil, @primary=true, @coder=nil>
@@ -24,8 +39,6 @@
   => "id"
   >> User.reflections[:columns].active_record
   => User(14 columns)
-  
-  
   
   
   equalities = wheres.grep(Arel::Nodes::Equality)
@@ -80,7 +93,7 @@
 
 * Kill &block stuff.
 
-
+* Make association conditions use pure SQL. Avoid 100's of IDs.
 
 
 

@@ -38,6 +38,9 @@ module GroupedScope
             def ungrouped_reflection_options(ungrouped_reflection)
               ungrouped_reflection.options.dup.tap do |options|
                 options[:class_name] = ungrouped_reflection.class_name
+                if ungrouped_reflection.source_reflection && options[:source].blank?  
+                  options[:source] = ungrouped_reflection.source_reflection.name 
+                end
               end
             end
             
