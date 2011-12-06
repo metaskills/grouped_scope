@@ -1,6 +1,15 @@
 
 = master
 
+= 3.1.0 (unreleased)
+
+* Works with ActiveRecord 3.1
+
+* The group object is now an ActiveRecord::Relation so you can further scope it.
+
+* New group.ids_sql which is an Arel SQL literal. Avoids large groups IDs and better query plans.
+
+
 = 0.6.0 (May 06, 2009)
 
 * ActiveRecord 2.3.14 compatibility.

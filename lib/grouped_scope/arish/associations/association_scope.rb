@@ -10,8 +10,8 @@ module GroupedScope
         # in chunks, it would be easier to hook into. This more elegant version which supers
         # up will only work for the has_many. https://gist.github.com/1434980 
         # 
-        # We will just have to monitor rails everynow and then and update this. Thankfully this
-        # copy is only used in a group scope. FYI, our one line change is below.
+        # We will just have to monitor rails every now and then and update this. Thankfully this
+        # copy is only used in a group scope. FYI, our one line change is commented below.
         def add_constraints(scope)
           tables = construct_tables
         

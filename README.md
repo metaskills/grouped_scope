@@ -9,13 +9,16 @@ http://metaskills.net/2008/09/28/jack-has_many-things/
 
 
 
-## Installation & Usage
+## Installation
 
 Install the gem with bundler. We follow a semantic versioning format that tracks ActiveRecord's minor version. So this means to use the latest 3.1.x version of GroupedScope with any ActiveRecord 3.1 version.
 
 ```ruby
 gem 'grouped_scope', '~> 3.1.0'
 ```
+
+
+## Setup
 
 To use GroupedScope on a model it must have a `:group_id` column.
 
@@ -29,6 +32,9 @@ class AddGroupId < ActiveRecord::Migration
   end
 end
 ```
+
+
+## General Usage
 
 Assume the following model.
 
@@ -77,6 +83,30 @@ defined on the original association. For instance:
 ```ruby
 @employee.group.reports.urgent.assigned_to(user)
 ```
+
+
+## Advanced Usage
+
+The object returned by the `#group` method is an ActiveRecord relation on the targets class, 
+in this case `Employee`. Given this, you can further scope the grouped proxy if needed. Below,
+we use the `:email_present` scope to refine the group down.
+
+```ruby
+class Employee < ActiveRecord::Base
+  has_many :reports
+  grouped_scope :reports
+  scope :email_present, where("email IS NOT NULL")
+end
+
+@employee_one = Employee.create :group_id => 5, :name => 'Ken'
+@employee_two = Employee.create :group_id => 5, :name => 'MetaSkills', :email => 'ken@metaskills.net'
+
+# Only one employee is returned now.
+@employee_one.group.email_present # => [#<Employee id: 1, group_id: 5, name: 'MetaSkills', email: 'ken@metaskills.net']
+```
+
+
+
 
 
 

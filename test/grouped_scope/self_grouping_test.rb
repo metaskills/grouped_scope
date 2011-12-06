@@ -8,12 +8,11 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
       @employee = FactoryGirl.create(:employee)
     end
     
-    it 'return an array' do
-      assert_instance_of Array, @employee.group
-    end
-    
     it 'return #ids array' do
       assert_equal [@employee.id], @employee.group.ids
+      e1 = FactoryGirl.create :employee, :group_id => 3
+      e2 = FactoryGirl.create :employee, :group_id => 3
+      assert_same_elements [e1.id, e2.id], e1.group.ids
     end
     
     it 'return #quoted_ids string for use in sql statments' do
@@ -33,6 +32,28 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
       assert_sql(/"?group_id"? IN \(#{@employee.id}\)/) do
         Employee.find :all, :conditions => {:group_id => @employee.group}
       end
+    end
+    
+    describe 'for #with_reflection' do
+      
+      before { @reflection = Employee.reflections[:reports] }
+      
+      it 'will set a reflection and always set it back to nil' do
+        assert_nil @employee.group.reflection
+        @employee.group.with_reflection(@reflection) do
+          assert_equal @reflection, @employee.group.reflection
+        end
+        assert_nil @employee.group.reflection
+      end
+      
+      it 'will use the primary key of the reflection' do
+        pk = 'association_primary_key'
+        @reflection.stubs :association_primary_key => pk
+        @employee.group.with_reflection(@reflection) do
+          assert_equal pk, @employee.group.send(:primary_key)
+        end
+      end
+      
     end
     
     describe 'for Array delegates' do
@@ -56,8 +77,8 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
   
   describe 'Calling #group' do
     
-    it 'return an array' do
-      assert_instance_of Array, FactoryGirl.create(:employee).group
+    it 'returns a active record relation' do
+      assert_instance_of ActiveRecord::Relation, FactoryGirl.create(:employee).group
     end
     
     describe 'with a NIL group_id' do
@@ -74,6 +95,11 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
         assert @employee.group.include?(@employee)
       end
       
+      it 'returns a sql literal for #ids_sql scoped to single record' do
+        @employee.group.ids_sql.must_be_instance_of Arel::Nodes::SqlLiteral
+        @employee.group.ids_sql.must_match %r{SELECT \"employees\".\"id\" FROM \"employees\"  WHERE \"employees\".\"id\" = #{@employee.id}}
+      end
+      
     end
     
     describe 'with a set group_id' do
@@ -88,6 +114,22 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
       
       it 'include self in group' do
         assert @employee.group.include?(@employee)
+      end
+      
+      it 'returns a sql literal for #ids_sql scoped to group' do
+        new_group_id = 420
+        e1 = FactoryGirl.create :employee, :group_id => new_group_id
+        e2 = FactoryGirl.create :employee, :group_id => new_group_id
+        e1.group.ids_sql.must_be_instance_of Arel::Nodes::SqlLiteral
+        e1.group.ids_sql.must_match %r{SELECT \"employees\".\"id\" FROM \"employees\"  WHERE \"employees\".\"group_id\" = #{new_group_id}}
+      end
+      
+      it 'allows the group to be further scoped' do
+        new_group_id = 420
+        e1 = FactoryGirl.create :employee, :group_id => new_group_id, :name => 'Ken', :email => 'ken@actionmoniker.com'
+        e2 = FactoryGirl.create :employee, :group_id => new_group_id, :name => 'Hostmaster', :email => 'hostmaster@actionmoniker.com'
+        e3 = FactoryGirl.create :employee, :group_id => new_group_id, :name => 'Ken', :email => 'ken@metaskills.net'
+        assert_same_elements [e1, e2], e1.group.email_for_actionmoniker
       end
       
     end

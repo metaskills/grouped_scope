@@ -147,6 +147,7 @@ class LegacyReport < ActiveRecord::Base
 end
 
 class Employee < ActiveRecord::Base
+  scope :email_for_actionmoniker, where("email LIKE '%@actionmoniker.com'")
   has_many :reports do ; def urgent ; find(:all,:conditions => {:title => 'URGENT'}) ; end ; end
   has_many :taxonomies, :as => :classable
   has_many :department_memberships
