@@ -34,6 +34,21 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
       end
     end
     
+    it 'allows you to ask if the group is present' do
+      @employee.update_attribute :group_id, 28
+      assert_no_queries do
+        assert @employee.group_id.present?
+        assert @employee.group.present?
+      end
+    end
+    
+    it 'allows you to ask if the group is blank' do
+      assert_no_queries do
+        assert @employee.group_id.blank?
+        assert @employee.group.blank?
+      end
+    end
+    
     describe 'for #with_reflection' do
       
       before { @reflection = Employee.reflections[:reports] }

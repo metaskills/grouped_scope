@@ -17,6 +17,14 @@ module GroupedScope
       @proxy_owner = proxy_owner
     end
     
+    def blank?
+      proxy_owner.group_id.blank?
+    end
+    
+    def present?
+      !blank?
+    end
+    
     def ids
       grouped_scoped_ids.map(&primary_key.to_sym)
     end
@@ -64,17 +72,13 @@ module GroupedScope
       @grouped_proxy ||= grouped_scoped
     end
     
-    def grouped?
-      proxy_owner.group_id.present?
-    end
-    
     def all_grouped?
       proxy_owner.all_grouped? rescue false
     end
     
     def grouped_scoped
       return proxy_class.scoped if all_grouped?
-      proxy_class.where grouped? ? arel_group_id.eq(proxy_owner.group_id) : arel_primary_key.eq(proxy_owner.id)
+      proxy_class.where present? ? arel_group_id.eq(proxy_owner.group_id) : arel_primary_key.eq(proxy_owner.id)
     end
     
     def grouped_scoped_ids

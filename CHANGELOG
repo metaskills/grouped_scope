@@ -7,6 +7,10 @@
 
 * The group object is now an ActiveRecord::Relation so you can further scope it.
 
+* New group scoped #blank? and #present? which simply checks if the proxy owner has a group set.
+  This allows us to tune the SQL generated to IN statements only when needed, even if a grouped 
+  scope is being used.
+
 * New group.ids_sql which is an Arel SQL literal. Avoids large groups IDs and better query plans.
 
 

@@ -8,13 +8,20 @@ class GroupedScope::HasManyTest < GroupedScope::TestCase
       @employee = FactoryGirl.create(:employee)
     end
     
-    it 'scope existing association to owner' do
+    it 'scopes existing association to owner' do
       assert_sql(/"employee_id" = #{@employee.id}/) do
         @employee.reports(true)
       end
     end
     
-    it 'scope group association to group' do
+    it 'scopes group association to owner when no group present' do
+      assert_sql(/"employee_id" = #{@employee.id}/) do
+        @employee.group.reports(true)
+      end
+    end
+    
+    it 'scopes group association to owner when group present' do
+      @employee.update_attribute :group_id, 43
       assert_sql(/"employee_id" IN \(#{@employee.id}\)/) do
         @employee.group.reports(true)
       end
@@ -110,7 +117,14 @@ class GroupedScope::HasManyTest < GroupedScope::TestCase
       end
     end
     
-    it 'scope group association to group' do
+    it 'scope group association to owner, since no group is present' do
+      assert_sql(/"legacy_reports"."email" = '#{@employee.id}'/) do
+        @employee.group.reports(true)
+      end
+    end
+    
+    it 'scopes group association to owners group when present' do
+      @employee.update_attribute :group_id, 43
       assert_sql(/"legacy_reports"."email" IN \('#{@employee.id}'\)/) do
         @employee.group.reports(true)
       end

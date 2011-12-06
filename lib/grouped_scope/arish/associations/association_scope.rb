@@ -48,7 +48,11 @@ module GroupedScope
             if reflection == chain.last
               # GroupedScope changed this line.
               # scope = scope.where(table[key].eq(owner[foreign_key]))
-              scope = scope.where(table[key].in(owner.group.ids))
+              scope = if owner.group.present?
+                        scope.where(table[key].in(owner.group.ids))
+                      else
+                        scope.where(table[key].eq(owner[foreign_key]))
+                      end
         
               if reflection.type
                 scope = scope.where(table[reflection.type].eq(owner.class.base_class.name))
