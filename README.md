@@ -1,12 +1,11 @@
 
 # GroupedScope: Has Many Associations IN (GROUPS)
 
-GroupedScope aims to make two things easier in your ActiveRecord models. First, provide an 
-easy way to group objects. Second, to allow the group to share association collections via existing 
-has_many relationships. See installation and usage for more details.
+<div style="float:right; margin:0 0 15px 15px; background-color:#fff; padding:13px;">
+  <img src="http://metaskills.net/assets/jack.png" alt="Jack Has Many Things" width="320" height="214">
+</div>
 
-http://metaskills.net/2008/09/28/jack-has_many-things/
-
+GroupedScope provides an easy way to group objects and to allow those groups to share association collections via existing `has_many` relationships. You may enjoy my original article titled [*Jack has_many :things*](http://metaskills.net/2008/09/28/jack-has_many-things/).
 
 
 ## Installation
