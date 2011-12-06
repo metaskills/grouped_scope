@@ -155,10 +155,9 @@ use the `#ids` or `#ids_sql` methods on the group.
 
 ## Todo List
 
-* Make group association conditions use pure SQL. Avoid many ids. Deprecate #quoted_ids.
 * Raise errors for :finder_sql/:counter_sql.
 * Add a user definable group_id schema.
-* Make SelfGrouping use targeted relation class for #primary_key.
+* Remove SelfGrouping#with_relation, has not yet proved useful.
 
 
 
