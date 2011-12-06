@@ -28,10 +28,12 @@ class GroupedScope::SelfGrouppingTest < GroupedScope::TestCase
       lambda{ GroupedScope::SelfGroupping.new(FooBar.new) }.must_raise(GroupedScope::NoGroupIdError)
     end
     
-    it 'return correct attribute_condition for GroupedScope::SelfGroupping object' do
-      assert_sql(/"?group_id"? IN \(#{@employee.id}\)/) do
-        Employee.find :all, :conditions => {:group_id => @employee.group}
-      end
+    it 'return correct predicate for GroupedScope::SelfGroupping object' do
+      @employee.update_attribute :group_id, 82
+      expected_sql = /"group_id" IN \(SELECT "employees"\."id" FROM "employees"  WHERE "employees"\."group_id" = 82/
+      assert_sql(expected_sql) { Employee.where(:group_id => @employee.group).all }
+      assert_sql(expected_sql) { Employee.all(:conditions => {:group_id => @employee.group}) }
+      assert_equal [@employee], Employee.where(:group_id => @employee.group).all
     end
     
     it 'allows you to ask if the group is present' do

@@ -11,9 +11,9 @@ module GroupedScope
       module ClassMethods
         
         def build_from_hash_with_grouped_scope(engine, attributes, default_table)
-          attributes.select{ |k,v| GroupedScope::SelfGroupping === v }.each do |kv|
-            k, v = kv
-            attributes[k] = v.ids
+          attributes.select{ |column, value| GroupedScope::SelfGroupping === value }.each do |column_value|
+            column, value = column_value
+            attributes[column] = value.arel_table[column.to_s].in(value.ids_sql)
           end
           build_from_hash_without_grouped_scope(engine, attributes, default_table)
         end

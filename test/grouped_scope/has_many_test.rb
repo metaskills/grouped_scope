@@ -22,7 +22,7 @@ class GroupedScope::HasManyTest < GroupedScope::TestCase
     
     it 'scopes group association to owner when group present' do
       @employee.update_attribute :group_id, 43
-      assert_sql(/"employee_id" IN \(#{@employee.id}\)/) do
+      assert_sql(/"employee_id" IN \(SELECT "employees"\."id" FROM "employees"  WHERE "employees"\."group_id" = 43\)/) do
         @employee.group.reports(true)
       end
     end
@@ -41,7 +41,7 @@ class GroupedScope::HasManyTest < GroupedScope::TestCase
       end
       
       it 'scope count sql to group' do
-        assert_sql(/SELECT COUNT\(\*\)/,/"employee_id" IN \(#{@e1.id}, #{@e2.id}\)/) do
+        assert_sql(/SELECT COUNT\(\*\)/,/"employee_id" IN \(SELECT "employees"\."id" FROM "employees"  WHERE "employees"\."group_id" = #{@e1.group_id}\)/) do
           @e1.group.reports(true).count
         end
       end
@@ -68,8 +68,8 @@ class GroupedScope::HasManyTest < GroupedScope::TestCase
         assert_same_elements @urgent_reports, @e2.group.reports(true).urgent
       end
       
-      it 'use assoc extension SQL along with group reflection' do
-        assert_sql(select_from_reports, where_for_groups, where_for_urgent_title) do
+      it 'use association extension SQL along with group reflection' do
+        assert_sql(select_from_reports, where_for_groups(@e2.group_id), where_for_urgent_title) do
           @e2.group.reports.urgent
         end
       end
@@ -96,7 +96,7 @@ class GroupedScope::HasManyTest < GroupedScope::TestCase
       end
       
       it 'use named scope SQL along with group reflection' do
-        assert_sql(select_from_reports, where_for_groups, where_for_urgent_body, where_for_urgent_title) do
+        assert_sql(select_from_reports, where_for_groups(@e2.group_id), where_for_urgent_body, where_for_urgent_title) do
           @e2.group.reports.with_urgent_title.with_urgent_body.inspect
         end
       end
@@ -125,7 +125,7 @@ class GroupedScope::HasManyTest < GroupedScope::TestCase
     
     it 'scopes group association to owners group when present' do
       @employee.update_attribute :group_id, 43
-      assert_sql(/"legacy_reports"."email" IN \('#{@employee.id}'\)/) do
+      assert_sql(/"legacy_reports"."email" IN \(SELECT "legacy_employees"\."email" FROM "legacy_employees"  WHERE "legacy_employees"\."group_id" = 43\)/) do
         @employee.group.reports(true)
       end
     end
@@ -139,8 +139,8 @@ class GroupedScope::HasManyTest < GroupedScope::TestCase
     /SELECT "reports"\.\* FROM "reports"/
   end
   
-  def where_for_groups
-    /WHERE "reports"."employee_id" IN \(2, 3\)/
+  def where_for_groups(id)
+    /WHERE "reports"."employee_id" IN \(SELECT "employees"\."id" FROM "employees"  WHERE "employees"\."group_id" = #{id}\)/
   end
   
   def where_for_urgent_body

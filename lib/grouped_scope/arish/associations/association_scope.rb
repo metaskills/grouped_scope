@@ -49,7 +49,7 @@ module GroupedScope
               # GroupedScope changed this line.
               # scope = scope.where(table[key].eq(owner[foreign_key]))
               scope = if owner.group.present?
-                        scope.where(table[key].in(owner.group.ids))
+                        scope.where(table[key].in(owner.group.ids_sql))
                       else
                         scope.where(table[key].eq(owner[foreign_key]))
                       end

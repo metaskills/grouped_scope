@@ -87,6 +87,18 @@ defined on the original association. For instance:
 
 ## Advanced Usage
 
+The group scoped object can respond to either `blank?` or `present?` which checks the group's 
+target `group_id` presence or not. We use this internally so that grouped scopes only use grouping
+SQL when absolutely needed.
+
+```ruby
+@employee_one = Employee.create :group_id => nil
+@employee_two = Employee.create :group_id => 38
+
+@employee_one.group.blank?   # => true
+@employee_two.group.present? # => true
+```
+
 The object returned by the `#group` method is an ActiveRecord relation on the targets class, 
 in this case `Employee`. Given this, you can further scope the grouped proxy if needed. Below,
 we use the `:email_present` scope to refine the group down.
@@ -105,9 +117,40 @@ end
 @employee_one.group.email_present # => [#<Employee id: 1, group_id: 5, name: 'MetaSkills', email: 'ken@metaskills.net']
 ```
 
+We always use raw SQL to get the group ids vs. mapping them to an array and using those in scopes. 
+This means that large groups can avoid pushing down hundreds of keys in SQL form. So given an employee
+with a `group_id` of `43` and calling `@employee.group.reports`, you would get something similar to
+the following SQL.
 
+```sql
+SELECT "reports".* 
+FROM "reports"  
+WHERE "reports"."employee_id" IN (
+  SELECT "employees"."id" 
+  FROM "employees"  
+  WHERE "employees"."group_id" = 43
+)
+```
 
+You can pass the group scoped object as a predicate to ActiveRecord's relation interface. In past 
+versions, this would have treated the group object as an array of IDs. The new behavior is to return 
+a SQL literal to be used with IN statements. So note, the following would generate SQL similar to 
+the one above.
 
+```ruby
+Employee.where(:group_id => @employee.group).all
+```
+
+If you need more control and you are working with the group at a lower level, you can always 
+use the `#ids` or `#ids_sql` methods on the group.
+
+```ruby
+# Returns primary key array.
+@employee.group.ids # => [33, 58, 240]
+
+# Returns a Arel::Nodes::SqlLiteral object.
+@employee.group.ids_sql # => 'SELECT "employees"."id" FROM "employees"  WHERE "employees"."group_id" = 33'
+```
 
 
 ## Todo List

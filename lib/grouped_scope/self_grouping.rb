@@ -33,7 +33,6 @@ module GroupedScope
       Arel.sql(grouped_scoped_ids.to_sql)
     end
     
-    # TODO: Note this.
     def quoted_ids
       ids.map { |id| quote_value(id,columns_hash[primary_key]) }.join(',')
     end

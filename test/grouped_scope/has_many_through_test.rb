@@ -29,13 +29,14 @@ class GroupedScope::HasManyThroughTest < GroupedScope::TestCase
   describe 'For grouped association' do
 
     it 'scope to group' do
-      assert_sql(/"employee_id" IN \(#{@e1.id}, #{@e2.id}\)/) do
+      
+      assert_sql(/"employee_id" IN \(SELECT "employees"\."id" FROM "employees"  WHERE "employees"\."group_id" = #{@e1.group_id}\)/) do
         @e2.group.departments(true)
       end
     end
     
     it 'scope count to group' do
-      assert_sql(/"employee_id" IN \(#{@e1.id}, #{@e2.id}\)/) do
+      assert_sql(/"employee_id" IN \(SELECT "employees"\."id" FROM "employees"  WHERE "employees"\."group_id" = #{@e1.group_id}\)/) do
         @e1.group.departments(true).count
       end
     end
