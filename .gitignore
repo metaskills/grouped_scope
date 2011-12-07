@@ -4,3 +4,4 @@ autotest
 .rbenv-version
 Gemfile.lock
 debug.log
+*.gem
