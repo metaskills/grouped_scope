@@ -22,14 +22,14 @@ module GroupedScope
             model.send(ungrouped_reflection.macro, grouped_name, grouped_options).tap do |grouped_reflection|
               grouped_reflection.grouped_scope = true
               model.grouped_reflections = model.grouped_reflections.merge(ungrouped_name => grouped_reflection)
-              define_grouped_scope_reader(model)
+              define_grouped_scope_reader
             end
           end
           
           
           private
           
-          def define_grouped_scope_reader(model)
+          def define_grouped_scope_reader
             model.send(:define_method, :group) do
               @group ||= GroupedScope::SelfGroupping.new(self)
             end
