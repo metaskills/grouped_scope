@@ -1,9 +1,9 @@
 
 = master
 
-= 3.1.0 (unreleased)
+= 3.1.0
 
-* Works with ActiveRecord 3.1
+* Works with ActiveRecord 3.1 or 3.2
 
 * The group object is now an ActiveRecord::Relation so you can further scope it.
 
