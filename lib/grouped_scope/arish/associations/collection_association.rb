@@ -5,16 +5,12 @@ module GroupedScope
 
         extend ActiveSupport::Concern
 
-        module InstanceMethods
-          
-          def association_scope
-            if reflection.grouped_scope?
-              @association_scope ||= Associations::AssociationScope.new(self).scope if klass
-            else
-              super
-            end
+        def association_scope
+          if reflection.grouped_scope?
+            @association_scope ||= Associations::AssociationScope.new(self).scope if klass
+          else
+            super
           end
-
         end
 
       end

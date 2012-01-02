@@ -1,0 +1,9 @@
+source :rubygems
+
+spec = eval File.read('grouped_scope.gemspec')
+deps = spec.dependencies.map { |dep| {:name => dep.name, :version => dep.requirement.to_s} }
+
+deps.reject! { |dep| dep[:name] =~ /activerecord/ }
+deps.each    { |dep| gem dep[:name], dep[:version] }
+
+gem 'activerecord', '~> 3.1.3'

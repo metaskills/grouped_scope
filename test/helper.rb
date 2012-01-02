@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'bundler'
 require "bundler/setup"
-Bundler.require(:default, :development, :test)
+Bundler.require
 require 'grouped_scope'
 require 'minitest/autorun'
 require 'factories'
@@ -156,7 +156,7 @@ class Employee < ActiveRecord::Base
 end
 
 class LegacyEmployee < ActiveRecord::Base
-  set_primary_key :email
+  self.primary_key = 'email'
   has_many :reports, :class_name => 'LegacyReport', :foreign_key => 'email'
   grouped_scope :reports
 end
