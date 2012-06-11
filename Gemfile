@@ -1,1 +1,1 @@
-eval File.read('Gemfile.rails-3.1')
+eval File.read('Gemfile.rails-3.2')
