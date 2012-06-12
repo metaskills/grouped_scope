@@ -1,7 +1,6 @@
 require 'rubygems'
-require 'bundler'
-require "bundler/setup"
-Bundler.require
+require 'bundler/setup'
+Bundler.require :default, :development
 require 'grouped_scope'
 require 'minitest/autorun'
 require 'factories'

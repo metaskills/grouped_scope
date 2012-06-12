@@ -8,10 +8,10 @@ GroupedScope provides an easy way to group objects and to allow those groups to 
 
 ## Installation
 
-Install the gem with bundler. We follow a semantic versioning format that tracks ActiveRecord's minor version. So this means to use the latest 3.1.x version of GroupedScope with any ActiveRecord 3.1 version.
+Install the gem with bundler. We follow a semantic versioning format that tracks ActiveRecord's minor version. So this means to use the latest 3.2.x version of GroupedScope with any ActiveRecord 3.2 version.
 
 ```ruby
-gem 'grouped_scope', '~> 3.1.0'
+gem 'grouped_scope', '~> 3.2.0'
 ```
 
 

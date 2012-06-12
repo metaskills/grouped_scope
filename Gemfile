@@ -1,1 +1,2 @@
-eval File.read('Gemfile.rails-3.1')
+source :rubygems
+gemspec

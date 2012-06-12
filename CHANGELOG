@@ -1,6 +1,11 @@
 
 = master
 
+= 3.2.0
+
+* ActiveRecord 3.2 only.
+
+
 = 3.1.0
 
 * Works with ActiveRecord 3.1 or 3.2

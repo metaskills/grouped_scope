@@ -1,5 +1,6 @@
 require 'active_record'
 require 'active_record/version'
+require 'active_support/all'
 require 'grouped_scope/errors'
 require 'grouped_scope/self_grouping'
 
