@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>GroupedScope by metaskills</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">GroupedScope</h1>
+        <p class="header">Has Many Associations IN (GROUPS)</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/metaskills/grouped_scope/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/metaskills/grouped_scope/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/metaskills/grouped_scope">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/metaskills">metaskills</a></p>
+
+
+      </header>
+      <section>
+        <h1>Has Many Associations IN (GROUPS)</h1>
+
+<p><img src="http://metaskills.net/assets/jack.png" alt="Jack Has Many Things" width="320" height="214"></p>
+
+<p>GroupedScope provides an easy way to group objects and to allow those groups to share association collections via existing <code>has_many</code> relationships. You may enjoy my original article titled <a href="http://metaskills.net/2008/09/28/jack-has_many-things/"><em>Jack has_many :things</em></a>.</p>
+
+<h2>Installation</h2>
+
+<p>Install the gem with bundler. We follow a semantic versioning format that tracks ActiveRecord's minor version. So this means to use the latest 3.2.x version of GroupedScope with any ActiveRecord 3.2 version.</p>
+
+<div class="highlight"><pre><span class="n">gem</span> <span class="s1">'grouped_scope'</span><span class="p">,</span> <span class="s1">'~&gt; 3.2.0'</span>
+</pre></div>
+
+<h2>Setup</h2>
+
+<p>To use GroupedScope on a model it must have a <code>:group_id</code> column.</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">AddGroupId</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">up</span>
+    <span class="n">add_column</span> <span class="ss">:employees</span><span class="p">,</span> <span class="ss">:group_id</span><span class="p">,</span> <span class="ss">:integer</span>
+  <span class="k">end</span>
+  <span class="k">def</span> <span class="nf">down</span>
+    <span class="n">remove_column</span> <span class="ss">:employees</span><span class="p">,</span> <span class="ss">:group_id</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+
+<h2>General Usage</h2>
+
+<p>Assume the following model.</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:reports</span>
+  <span class="n">grouped_scope</span> <span class="ss">:reports</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>By calling grouped_scope on any association you create a new group accessor for each 
+instance. The object returned will act just like an array and at least include the 
+current object that called it.</p>
+
+<div class="highlight"><pre><span class="vi">@employee_one</span><span class="o">.</span><span class="n">group</span>   <span class="c1"># =&gt; [#&lt;Employee id: 1, group_id: nil&gt;]</span>
+</pre></div>
+
+<p>To group resources, just assign the same <code>:group_id</code> to each record in that group.</p>
+
+<div class="highlight"><pre><span class="vi">@employee_one</span><span class="o">.</span><span class="n">update_attribute</span> <span class="ss">:group_id</span><span class="p">,</span> <span class="mi">1</span>
+<span class="vi">@employee_two</span><span class="o">.</span><span class="n">update_attribute</span> <span class="ss">:group_id</span><span class="p">,</span> <span class="mi">1</span>
+<span class="vi">@employee_one</span><span class="o">.</span><span class="n">group</span>   <span class="c1"># =&gt; [#&lt;Employee id: 1, group_id: 1&gt;, #&lt;Employee id: 2, group_id: 1&gt;]</span>
+</pre></div>
+
+<p>Calling grouped_scope on the :reports association leaves the existing association intact.</p>
+
+<div class="highlight"><pre><span class="vi">@employee_one</span><span class="o">.</span><span class="n">reports</span>  <span class="c1"># =&gt; [#&lt;Report id: 2, employee_id: 1&gt;]</span>
+<span class="vi">@employee_two</span><span class="o">.</span><span class="n">reports</span>  <span class="c1"># =&gt; [#&lt;Report id: 18, employee_id: 2&gt;, #&lt;Report id: 36, employee_id: 2&gt;]</span>
+</pre></div>
+
+<p>Now the good part, all associations passed to the grouped_scope method can be called 
+on the group proxy. The collection will return resources shared by the group.</p>
+
+<div class="highlight"><pre><span class="vi">@employee_one</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">reports</span> <span class="c1"># =&gt; [#&lt;Report id: 2, employee_id: 1&gt;, </span>
+                                  <span class="c1">#&lt;Report id: 18, employee_id: 2&gt;, </span>
+                                  <span class="c1">#&lt;Report id: 36, employee_id: 2&gt;]</span>
+</pre></div>
+
+<p>You can even call scopes or association extensions defined on the objects in the collection
+defined on the original association. For instance:</p>
+
+<div class="highlight"><pre><span class="vi">@employee</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">reports</span><span class="o">.</span><span class="n">urgent</span><span class="o">.</span><span class="n">assigned_to</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</pre></div>
+
+<h2>Advanced Usage</h2>
+
+<p>The group scoped object can respond to either <code>blank?</code> or <code>present?</code> which checks the group's 
+target <code>group_id</code> presence or not. We use this internally so that grouped scopes only use grouping
+SQL when absolutely needed.</p>
+
+<div class="highlight"><pre><span class="vi">@employee_one</span> <span class="o">=</span> <span class="no">Employee</span><span class="o">.</span><span class="n">create</span> <span class="ss">:group_id</span> <span class="o">=&gt;</span> <span class="kp">nil</span>
+<span class="vi">@employee_two</span> <span class="o">=</span> <span class="no">Employee</span><span class="o">.</span><span class="n">create</span> <span class="ss">:group_id</span> <span class="o">=&gt;</span> <span class="mi">38</span>
+
+<span class="vi">@employee_one</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">blank?</span>   <span class="c1"># =&gt; true</span>
+<span class="vi">@employee_two</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">present?</span> <span class="c1"># =&gt; true</span>
+</pre></div>
+
+<p>The object returned by the <code>#group</code> method is an ActiveRecord relation on the targets class, 
+in this case <code>Employee</code>. Given this, you can further scope the grouped proxy if needed. Below,
+we use the <code>:email_present</code> scope to refine the group down.</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:reports</span>
+  <span class="n">grouped_scope</span> <span class="ss">:reports</span>
+  <span class="n">scope</span> <span class="ss">:email_present</span><span class="p">,</span> <span class="n">where</span><span class="p">(</span><span class="s2">"email IS NOT NULL"</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="vi">@employee_one</span> <span class="o">=</span> <span class="no">Employee</span><span class="o">.</span><span class="n">create</span> <span class="ss">:group_id</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s1">'Ken'</span>
+<span class="vi">@employee_two</span> <span class="o">=</span> <span class="no">Employee</span><span class="o">.</span><span class="n">create</span> <span class="ss">:group_id</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="ss">:name</span> <span class="o">=&gt;</span> <span class="s1">'MetaSkills'</span><span class="p">,</span> <span class="ss">:email</span> <span class="o">=&gt;</span> <span class="s1">'ken@metaskills.net'</span>
+
+<span class="c1"># Only one employee is returned now.</span>
+<span class="vi">@employee_one</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">email_present</span> <span class="c1"># =&gt; [#&lt;Employee id: 1, group_id: 5, name: 'MetaSkills', email: 'ken@metaskills.net']</span>
+</pre></div>
+
+<p>We always use raw SQL to get the group ids vs. mapping them to an array and using those in scopes. 
+This means that large groups can avoid pushing down hundreds of keys in SQL form. So given an employee
+with a <code>group_id</code> of <code>43</code> and calling <code>@employee.group.reports</code>, you would get something similar to
+the following SQL.</p>
+
+<div class="highlight"><pre><span class="k">SELECT</span> <span class="ss">"reports"</span><span class="p">.</span><span class="o">*</span> 
+<span class="k">FROM</span> <span class="ss">"reports"</span>  
+<span class="k">WHERE</span> <span class="ss">"reports"</span><span class="p">.</span><span class="ss">"employee_id"</span> <span class="k">IN</span> <span class="p">(</span>
+  <span class="k">SELECT</span> <span class="ss">"employees"</span><span class="p">.</span><span class="ss">"id"</span> 
+  <span class="k">FROM</span> <span class="ss">"employees"</span>  
+  <span class="k">WHERE</span> <span class="ss">"employees"</span><span class="p">.</span><span class="ss">"group_id"</span> <span class="o">=</span> <span class="mi">43</span>
+<span class="p">)</span>
+</pre></div>
+
+<p>You can pass the group scoped object as a predicate to ActiveRecord's relation interface. In past 
+versions, this would have treated the group object as an array of IDs. The new behavior is to return 
+a SQL literal to be used with IN statements. So note, the following would generate SQL similar to 
+the one above.</p>
+
+<div class="highlight"><pre><span class="no">Employee</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">:group_id</span> <span class="o">=&gt;</span> <span class="vi">@employee</span><span class="o">.</span><span class="n">group</span><span class="p">)</span><span class="o">.</span><span class="n">all</span>
+</pre></div>
+
+<p>If you need more control and you are working with the group at a lower level, you can always 
+use the <code>#ids</code> or <code>#ids_sql</code> methods on the group.</p>
+
+<div class="highlight"><pre><span class="c1"># Returns primary key array.</span>
+<span class="vi">@employee</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">ids</span> <span class="c1"># =&gt; [33, 58, 240]</span>
+
+<span class="c1"># Returns a Arel::Nodes::SqlLiteral object.</span>
+<span class="vi">@employee</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">ids_sql</span> <span class="c1"># =&gt; 'SELECT "employees"."id" FROM "employees"  WHERE "employees"."group_id" = 33'</span>
+</pre></div>
+
+<h2>Todo List</h2>
+
+<ul>
+<li>Raise errors for :finder_sql/:counter_sql.</li>
+<li>Add a user definable group_id schema.</li>
+<li>Remove SelfGrouping#with_relation, has not yet proved useful.</li>
+</ul><h2>Testing</h2>
+
+<p>Simple! Just clone the repo, then run <code>bundle install</code> and <code>bundle exec rake</code>. The tests will begin to run. We also use Travis CI to run our tests too. Current build status is:</p>
+
+<p><a href="http://travis-ci.org/metaskills/grouped_scope"><img src="https://secure.travis-ci.org/metaskills/grouped_scope.png" alt="Build Status"></a></p>
+
+<h2>License</h2>
+
+<p>Released under the MIT license.
+Copyright (c) 2011 Ken Collins</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-34687749-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
